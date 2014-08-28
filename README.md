@@ -338,7 +338,7 @@ quasiglobals to proper command line arguments of the program.
 
 ### License
 
-hunalign is licensed under the GNU LGPL version 2.1 or later.
+hunalign is licensed under the GNU LGPLv3 or later.
 
 ### Reference
 
