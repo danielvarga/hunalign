@@ -62,7 +62,7 @@ As already noted, precompiled Windows binaries are provided.
 But it is easy to build from source under Windows, too.
 With CYGWIN installed, make should work.
 Using MSVC++, just create a project with the
-src/hunalign/*.cpp and src/utils/*.cpp files in it, excluding the obsolete
+src/hunalign/\*.cpp and src/utils/\*.cpp files in it, excluding the obsolete
 src/hunalign/DOMTreeErrorReporter.cpp
 src/hunalign/similarityEvaluator.cpp and
 src/hunalign/TEIReader.cpp source files.
@@ -77,14 +77,14 @@ If you use the precompiled Windows binaries, copy them here from their directory
 The build can be tested and basic usage can be understood by typing the following:
 
 <pre>src/hunalign/hunalign data/hu-en.stem.dic examples/demo.hu.stem examples/demo.en.stem \
-	-hand=examples/demo.manual.ladder -text &gt; /tmp/align.txt
+    -hand=examples/demo.manual.ladder -text > /tmp/align.txt
 less /tmp/align.txt
 </pre>
 
 Similarly, for Windows, this would be (in one line):
 
 <pre>hunalign.exe data\hu-en.stem.dic examples\demo.hu.stem examples\demo.en.stem
-	-hand=examples\demo.manual.ladder -text &gt; align.txt
+    -hand=examples\demo.manual.ladder -text > align.txt
 more align.txt
 </pre>
 
@@ -132,63 +132,63 @@ The non-mandatory options are the following:
 
 <pre>
 -text
-	The output should be in text format, rather than the default (numeric) ladder format.
+    The output should be in text format, rather than the default (numeric) ladder format.
 
 -bisent
-	Only bisentences (one-to-one alignment segments) are printed. In non-text mode, their
-	starting rung is printed.
+    Only bisentences (one-to-one alignment segments) are printed. In non-text mode, their
+    starting rung is printed.
 
 -cautious
-	In -bisent mode, only bisentences for which both the preceeding and the following
-	segments are one-to-one are printed. In the default non-bisent mode, only rungs
-	for which both the preceeding and the following segments are one-to-one are printed.
+    In -bisent mode, only bisentences for which both the preceeding and the following
+    segments are one-to-one are printed. In the default non-bisent mode, only rungs
+    for which both the preceeding and the following segments are one-to-one are printed.
 
 -hand=file
-	When this argument is given, the precision and recall of the alignment is calculated
-	based on the manually built ladder file. Information like the following is written
-	on the standard error: 
-	53 misaligned out of 6446 correct items, 6035 bets.
-	Precision: 0.991218, Recall: 0.928017
+    When this argument is given, the precision and recall of the alignment is calculated
+    based on the manually built ladder file. Information like the following is written
+    on the standard error: 
+    53 misaligned out of 6446 correct items, 6035 bets.
+    Precision: 0.991218, Recall: 0.928017
 
-        Note that by default, 'item' means rung. The switch -bisent also changes the semantics
-	of the scoring from rung-based to bisentence-based and in this case 'item' means bisentences.
-	See File formats about the format of this input align file.
+  Note that by default, 'item' means rung. The switch -bisent also changes the semantics
+    of the scoring from rung-based to bisentence-based and in this case 'item' means bisentences.
+    See File formats about the format of this input align file.
 
 -realign
-	If this option is set, the alignment is built in three phases.
-	After an initial alignment, the algorithm heuristically adds items
-	to the dictionary based on cooccurrences in the identified bisentences.
-	Then it re-runs the alignment process based on this larger dictionary.
-	This option is recommended to achieve the highest possible alignment quality.
-	It is not set by default because it approximately triples the running time
-	while the quality improvement it yields are typically small.
+    If this option is set, the alignment is built in three phases.
+    After an initial alignment, the algorithm heuristically adds items
+    to the dictionary based on cooccurrences in the identified bisentences.
+    Then it re-runs the alignment process based on this larger dictionary.
+    This option is recommended to achieve the highest possible alignment quality.
+    It is not set by default because it approximately triples the running time
+    while the quality improvement it yields are typically small.
 
 -autodict=filename
-	The dictionary built during realign is saved to this file. By default, it is not saved.
+    The dictionary built during realign is saved to this file. By default, it is not saved.
 
 -utf
-	The system uses the character counts of the sentences as information for the
-	pairing of sentences. By default, it assumes one-byte character encoding such
-	as ISO Latin-1 when calculating these counts. If our text is in UTF-8 format,
-	byte counts and character counts are different, and we must use the -utf switch
-	to force the system to properly calculate character counts.
-	Note: UTF-16 input is not supported.
+    The system uses the character counts of the sentences as information for the
+    pairing of sentences. By default, it assumes one-byte character encoding such
+    as ISO Latin-1 when calculating these counts. If our text is in UTF-8 format,
+    byte counts and character counts are different, and we must use the -utf switch
+    to force the system to properly calculate character counts.
+    Note: UTF-16 input is not supported.
 
 Postfiltering options:
 There are various postprocessors which remove implausible rungs based on various heuristics.
 
 -thresh=n
-	Don't print out segments with score lower than n/100.
+    Don't print out segments with score lower than n/100.
 
 -ppthresh=n
-	Filter rungs with less than n/100 average score in their vicinity.
+    Filter rungs with less than n/100 average score in their vicinity.
 
 -headerthresh=n
-	Filter all rungs at the start and end of texts until finding a reliably
-	plausible region.
+    Filter all rungs at the start and end of texts until finding a reliably
+    plausible region.
 
 -topothresh=n
-	Filter rungs with less than n percent of one-to-one segments in their vicinity.
+    Filter rungs with less than n percent of one-to-one segments in their vicinity.
 
 All these 'thresh' values default to zero (i.e., no postfiltering).
 Typical sensible values are -ppthresh=30 -headerthresh=100 -topothresh=30
@@ -205,9 +205,8 @@ target text, and the output, respectively. The batch mode saves time over
 shell-based batching of jobs by reading the dictionary into memory only once.
 
 In batch mode, for every job, there is an align quality value written on standard error.
-This line has the format "Quality\t<output_file>\t<quality_value>" so it can be automatically
+This line has the format "Quality \t output_file \t quality_value" so it can be automatically
 processed.
-</quality_value></output_file>
 
 ### File formats
 
@@ -275,7 +274,7 @@ There are several tools aiding hunalign.
 The preferred output format for hunalign is the ladder format. The scripts/ladder2text.py
 tool can turn this into text format. Usage:
 
-<pre>scripts/ladder2text.py ladder_file corpus_in_first_lang corpus_in_second_lang &gt; aligned_text</pre>
+<pre>scripts/ladder2text.py ladder_file corpus_in_first_lang corpus_in_second_lang > aligned_text</pre>
 
 Note that you can run hunalign on tokenized (or even tokenized and stemmed) text,
 and then run ladder2text on the original nontokenized text to get nontokenized,
@@ -290,8 +289,8 @@ for hunalign.
 
 Usage (write in one line): 
 <pre>scripts/partialAlign.py huge_text_in_one_language huge_text_in_other_language
-	output_filename name_of_first_lang name_of_second_lang
-	[ maximal_size_of_chunks=5000 ] &gt; hunalign_batch
+    output_filename name_of_first_lang name_of_second_lang
+    [ maximal_size_of_chunks=5000 ] > hunalign_batch
 </pre>
 
 The two input files must have one line per sentence. Whitespace-delimited tokenization
@@ -345,12 +344,11 @@ hunalign is licensed under the GNU LGPL version 2.1 or later.
 
 If you use the software, please reference the following paper:
 
-<pre>D. Varga, L. Németh, P. Halácsy, A. Kornai, V. Trón, V. Nagy (2005).
+D. Varga, L. Németh, P. Halácsy, A. Kornai, V. Trón, V. Nagy (2005).
 **Parallel corpora for medium density languages**
 _In Proceedings of the RANLP 2005_, pages 590-596.
-[(pdf)](http://www.ldc.upenn.edu/Catalog/docs/LDC2008T01/ranlp05.pdf)
+[(pdf)](www.kornai.com/Papers/ranlp05parallel.pdf)
 
-</pre>
 
 hunalign was developed under the Hunglish Project to build the
 [Hunglish Corpus](http://mokk.bme.hu/resources/hunglishcorpus).
