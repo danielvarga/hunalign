@@ -1,0 +1,27 @@
+====
+Notes for users:
+
+
+Data obtained from the English-Hungarian parallel Multext-East "1984" corpus.
+
+.sen files contain the sentence-level information of that corpus, excluding word-level information and paragraph structure.
+
+.pre files contain an automatically processed version of these, for aligner consumption.
+Processing steps are: rude tokenization, lowercasing, stemming by the hunstem tool with Hungarian and English resources.
+
+
+====
+Notes for Hunglish developers:
+
+Originally at
+
+sen:
+/home/daniel/hunglish/data/experiments/1984.nonlemmatized.improved/Hungarian/1984.sen
+/home/daniel/hunglish/data/experiments/1984.nonlemmatized.improved/English/1984.sen
+
+preproc:
+/home/daniel/hunglish/data/experiments/1984.nonlemmatized.improved/Hungarian/1984.sen.low.rok.stem
+/home/daniel/hunglish/data/experiments/1984.nonlemmatized.improved/English/1984.sen.low.rok.stem
+
+hand:
+/home/daniel/hunglish/data/experiments/hand.indexes

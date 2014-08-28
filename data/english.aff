@@ -1,0 +1,179 @@
+
+SET ISO8859-2
+FORBIDDENWORD !
+ONLYROOT ~
+WORDCHARS -_
+
+SFX n Y 1
+SFX n 0 es [^o]o <SING3>>  
+
+SFX i Y 1
+SFX i 0 s [^o]o <SING3>>  
+
+SFX k Y 2
+SFX k 0 s' [^o]o <PLUR><POSS>>  
+SFX k 0 s [^o]o <PLUR>>  
+
+SFX u Y 5
+SFX u 0 's [ck][^s] <POSS>>  
+SFX u 0 's [^ck]. <POSS>>  
+SFX u 0 ' nce <POSS>>  
+SFX u 0 ' [ck]s <POSS>>  
+SFX u 0 ' s <POSS>>  
+
+SFX h Y 1
+SFX h 0 0 . >  
+
+SFX g Y 1
+SFX g e ing ge <PART>>  
+
+SFX d Y 6
+SFX d y ied [^aeiou]y <PAST><?PART>>  
+SFX d 0 ed [bcdfgklmnprstvwxyz]c <PAST><?PART>>  
+SFX d 0 ked [aeiou]c <PAST><?PART>>  
+SFX d 0 ed [aeiou]y <PAST><?PART>>  
+SFX d 0 ed [xw] <PAST><?PART>>  
+SFX d e ed e <PAST><?PART>>  
+
+SFX c Y 14
+SFX c e ing [^ieg]e <PART>>  
+SFX c 0 es [^c]s <SING3>>  
+SFX c 0 s [^sc]h <SING3>>  
+SFX c y ies [bcdfgklmnprstvwxyz]y <SING3>>  
+SFX c 0 es [sc]h <SING3>>  
+SFX c 0 s [aeiou]y <SING3>>  
+SFX c 0 s oo <SING3>>  
+SFX c 0 es x <SING3>>  
+SFX c 0 s [^shoxy] <SING3>>  
+SFX c 0 ing [xyw] <PART>>  
+SFX c 0 ing [bcdfgklmnprstvwxyz]c <PART>>  
+SFX c 0 king [aeiou]c <PART>>  
+SFX c 0 ing ee <PART>>  
+SFX c ie ying ie <PART>>  
+
+SFX e Y 14
+SFX e 0 zing [^z]z <PART>>  
+SFX e 0 ping [^p]p <PART>>  
+SFX e 0 king [^ck]k <PART>>  
+SFX e 0 ding [^d]d <PART>>  
+SFX e 0 bing [^b]b <PART>>  
+SFX e 0 ring [^r]r <PART>>  
+SFX e 0 sing [^s]s <PART>>  
+SFX e 0 ting [^t]t <PART>>  
+SFX e 0 ning [^n]n <PART>>  
+SFX e 0 fing [^f]f <PART>>  
+SFX e 0 ming [^m]m <PART>>  
+SFX e 0 ling [^l]l <PART>>  
+SFX e 0 ving [^v]v <PART>>  
+SFX e 0 ging [^g]g <PART>>  
+
+SFX b Y 1
+SFX b 0 0 . >  
+
+SFX a Y 1
+SFX a 0 0 . >  
+
+SFX w Y 6
+SFX w 0 er [aciouxw] <COMP>>  
+SFX w y iest y <SUPER>>  
+SFX w e est e <SUPER>>  
+SFX w y ier y <COMP>>  
+SFX w e er e <COMP>>  
+SFX w 0 est [aciouxw] <SUPER>>  
+
+SFX f Y 1
+SFX f 0 ing ge <PART>>  
+
+SFX j Y 17
+SFX j 0 s [bcdfgklmnprstvwxyz]y <PLUR>>  
+SFX j 0 0 cs <PLUR>>  
+SFX j 0 es [sc]h <PLUR>>  
+SFX j 0 s [aeiou]y <PLUR>>  
+SFX j 0 s oo <PLUR>>  
+SFX j 0 s [^shoxy] <PLUR>>  
+SFX j 0 es' x <PLUR><POSS>>  
+SFX j 0 es [^c]s <PLUR>>  
+SFX j 0 s [^sc]h <PLUR>>  
+SFX j 0 es x <PLUR>>  
+SFX j 0 s' [^shoxy] <PLUR><POSS>>  
+SFX j 0 es' [^c]s <PLUR><POSS>>  
+SFX j 0 s' [bcdfgklmnprstvwxyz]y <PLUR><POSS>>  
+SFX j 0 es' [sc]h <PLUR><POSS>>  
+SFX j 0 s' [aeiou]y <PLUR><POSS>>  
+SFX j 0 s' oo <PLUR><POSS>>  
+SFX j 0 s' [^sc]h <PLUR><POSS>>  
+
+SFX l Y 4
+SFX l fe ves fe <PLUR>>  
+SFX l f ves' f <PLUR><POSS>>  
+SFX l f ves f <PLUR>>  
+SFX l fe ves' fe <PLUR><POSS>>  
+
+SFX m Y 1
+SFX m 0 ing [^ecxyw] <PART>>  
+
+SFX v Y 1
+SFX v 0 ed [^eycxw] <PAST><?PART>>  
+
+SFX o Y 2
+SFX o 0 es' [^o]o <PLUR><POSS>>  
+SFX o 0 es [^o]o <PLUR>>  
+
+SFX p Y 28
+SFX p 0 ler [^l]l <COMP>>  
+SFX p 0 pest [^p]p <SUPER>>  
+SFX p 0 ker [^ck]k <COMP>>  
+SFX p 0 ver [^v]v <COMP>>  
+SFX p 0 ger [^g]g <COMP>>  
+SFX p 0 ber [^b]b <COMP>>  
+SFX p 0 kest [^ck]k <SUPER>>  
+SFX p 0 rer [^r]r <COMP>>  
+SFX p 0 ser [^s]s <COMP>>  
+SFX p 0 dest [^d]d <SUPER>>  
+SFX p 0 best [^b]b <SUPER>>  
+SFX p 0 rest [^r]r <SUPER>>  
+SFX p 0 sest [^s]s <SUPER>>  
+SFX p 0 test [^t]t <SUPER>>  
+SFX p 0 nest [^n]n <SUPER>>  
+SFX p 0 der [^d]d <COMP>>  
+SFX p 0 ter [^t]t <COMP>>  
+SFX p 0 ner [^n]n <COMP>>  
+SFX p 0 fest [^f]f <SUPER>>  
+SFX p 0 mest [^m]m <SUPER>>  
+SFX p 0 zest [^z]z <SUPER>>  
+SFX p 0 fer [^f]f <COMP>>  
+SFX p 0 lest [^l]l <SUPER>>  
+SFX p 0 mer [^m]m <COMP>>  
+SFX p 0 zer [^z]z <COMP>>  
+SFX p 0 vest [^v]v <SUPER>>  
+SFX p 0 gest [^g]g <SUPER>>  
+SFX p 0 per [^p]p <COMP>>  
+
+SFX q Y 2
+SFX q 0 est [^ecxyw] <SUPER>>  
+SFX q 0 er [^ecxyw] <COMP>>  
+
+SFX r Y 14
+SFX r 0 ded [^d]d <PAST><?PART>>  
+SFX r 0 ted [^t]t <PAST><?PART>>  
+SFX r 0 ned [^n]n <PAST><?PART>>  
+SFX r 0 fed [^f]f <PAST><?PART>>  
+SFX r 0 med [^m]m <PAST><?PART>>  
+SFX r 0 zed [^z]z <PAST><?PART>>  
+SFX r 0 ped [^p]p <PAST><?PART>>  
+SFX r 0 led [^l]l <PAST><?PART>>  
+SFX r 0 ked [^ck]k <PAST><?PART>>  
+SFX r 0 ved [^v]v <PAST><?PART>>  
+SFX r 0 ged [^g]g <PAST><?PART>>  
+SFX r 0 bed [^b]b <PAST><?PART>>  
+SFX r 0 red [^r]r <PAST><?PART>>  
+SFX r 0 sed [^s]s <PAST><?PART>>  
+
+SFX s Y 2
+SFX s y ies [bcdfgklmnprstvwxyz]y <PLUR>>  
+SFX s y ies' [bcdfgklmnprstvwxyz]y <PLUR><POSS>>  
+
+SFX t Y 2
+SFX t 0 's [^s] <POSS>>  
+SFX t 0 ' s <POSS>>  
+

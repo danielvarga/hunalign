@@ -1,0 +1,27 @@
+====
+Notes for users:
+
+
+Data obtained from the English-Hungarian parallel Multext-East "1984" corpus.
+
+.sen files contain the sentence-level information of that corpus, excluding word-level information and paragraph structure.
+
+.pre files (unlike in ../1984.hu) contain tokenization and word stems that were manually obtained (well, were partly manually verified) by the Multext-East people.
+
+====
+Notes for Hunglish developers:
+
+Originally at
+
+sen:
+~/hunglish/data/experiments/1984.nonlemmatized.improved/Hungarian/1984.sen
+~/hunglish/data/experiments/1984.nonlemmatized.improved/English/1984.sen
+
+preproc:
+~/hunglish/data/experiments/1984.hu.lemmas
+~/hunglish/data/experiments/1984.en.lemmas
+
+(Actually, Multext-East ids were truncated from these files.)
+
+hand:
+~/hunglish/data/experiments/hand.indexes

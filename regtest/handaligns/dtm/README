@@ -1,0 +1,30 @@
+====
+Notes for users:
+
+
+From Diplomacy and Trade Magazine. (I'm not exactly sure what part of which issue, exactly.)
+
+We are grateful to the original copyright holder for the raw data.
+
+Sentence-level segmentation and manual alignment built at the 
+Department of Corpus Linguistics at the Hungarian Research Institute for Linguistics.
+
+.sen files contain the sentence-level information.
+
+.pre files contain an automatically processed version of these, for aligner consumption.
+Processing steps are: rude tokenization and stemming by the hunstem tool with Hungarian and English resources.
+
+hand.ladder is the manual align of the bitext.
+
+====
+Notes for Hunglish developers:
+
+Based on the text format align ./dtm.bi
+
+See ../steinbeck/README for details on the text to .sen,.ladder conversion.
+
+The .pre files were built like this:
+
+export BINDIR=/home/daniel/Bicorpus/scripts
+cat hu.sen | $BINDIR/tok.one.sh | $BINDIR/hu.stem.one.sh > hu.pre
+cat en.sen | $BINDIR/tok.one.sh | $BINDIR/en.stem.one.sh > en.pre

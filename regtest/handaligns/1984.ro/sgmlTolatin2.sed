@@ -1,0 +1,10 @@
+s/\&abreve;/ã/g
+s/\&Abreve;/Ã/g
+s/\&scedil;/º/g
+s/\&Scedil;/ª/g
+s/\&tcedil;/þ/g
+s/\&Tcedil;/Þ/g
+s/\&Acirc;/Â/g
+s/\&acirc;/â/g
+s/\&Icirc;/Î/g
+s/\&icirc;/î/g

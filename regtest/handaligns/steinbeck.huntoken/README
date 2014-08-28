@@ -1,0 +1,30 @@
+====
+Notes for users:
+
+John Steinbeck's "Cup of Gold". Raw data obtained from the Hungarian Electronic Library and Project Gutenberg.
+
+Sentence-level segmentation and paragraph-information by our huntoken tool. (Note: Unedited by hand, so not perfect at all.)
+
+Although it strictly respects this imperfect sentence-level segmentation, the alignment itself is hand-edited, and should be error-free. 
+It was built at the Department of Corpus Linguistics at the Hungarian Research Institute for Linguistics.
+
+.sen files contain the sentence-level information. Paragraph structure is described by paragraph-delimiter quasi-sentences.
+
+.pre files contain an automatically processed version of these, for aligner consumption.
+Processing steps are: rude tokenization, lowercasing, stemming by the hunstem tool with Hungarian and English resources.
+
+====
+Notes for Hunglish developers:
+
+Originally at
+
+sen:
+~/hunglish/data/experiments/Steinbeck2/Steinbeck_1.hu.sen
+~/hunglish/data/experiments/Steinbeck2/Steinbeck_1.en.sen
+
+preproc:
+~/hunglish/data/experiments/Steinbeck.improve/Steinbeck_1.hu.sen.low.rok.stem
+~/hunglish/data/experiments/Steinbeck.improve/Steinbeck_1.en.sen.low.rok.stem
+
+hand:
+~/hunglish/data/experiments/Steinbeck.compare/ladder.hand.nostartendpara.txt

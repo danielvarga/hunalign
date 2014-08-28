@@ -1,0 +1,28 @@
+cvs co hunalign
+cd hunalign
+
+# Manually bump version number all over readme.html.
+...
+
+# Remove CVS metadata. Commit before this!
+find . | grep "/CVS$" | while read x ; do rm -rf "$x" ; done
+
+# I have no rights to release the parallel corpora.
+rm -rf regtest
+
+cd ..
+ver=3
+mv hunalign hunalign-1.$ver
+cp -r hunalign-1.$ver /public/Hunglish/src/hunalign/latest/
+tar zcvf hunalign-1.$ver.tgz hunalign-1.$ver
+cp hunalign-1.$ver.tgz /public/Hunglish/src/hunalign/latest/
+
+# Build for Windows. Make a zip called hunalign-1.$ver-windows.zip.
+# The zip should contain a directory called hunalign-1.$ver-windows, containing
+# the hunalign.exe, and
+# msvcp100.dll, msvcr100.dll files for MSVC++ or
+# cygwin1.dll for CYGWIN make.
+# Copy the zip to /public/Hunglish/src/hunalign/latest/.
+
+# Manually copy the readme.html to the http://mokk.bme.hu/resources/hunalign plone page
+# in its html source edit mode.

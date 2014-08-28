@@ -1,0 +1,54 @@
+====
+Notes for users:
+
+John Steinbeck's "Cup of Gold". Raw data obtained from the Hungarian Electronic Library and Project Gutenberg.
+
+Sentence-level segmentation and paragraph-information was hand-edited at the 
+Department of Corpus Linguistics at the Hungarian Research Institute for Linguistics.
+
+.sen files contain the sentence-level information. Paragraph structure is described by paragraph-delimiter quasi-sentences.
+
+.pre files contain an automatically processed version of these, for aligner consumption.
+Processing steps are: rude tokenization and stemming by the hunstem tool with Hungarian and English resources.
+
+auto.ladder was built by hunalign from hu.pre and en.pre, with default arguments.
+
+hand.ladder is the manual align of the bitext, also by the
+Department of Corpus Linguistics at the Hungarian Research Institute for Linguistics.
+It is based on auto.ladder.
+
+====
+Notes for Hunglish developers:
+
+Originally at
+
+sen:
+
+Originally from
+/home/daniel/hunglish/data/experiments/Steinbeck.handsegment/hu.sen
+/home/daniel/hunglish/data/experiments/Steinbeck.handsegment/en.sen
+
+, but some whitespaces were retroactively removed, based on the text version of the manaual align:
+cat align.hand.txt | cut -f1 | awk 'BEGIN {FS=" ~~~ "} { for (i=1;i<=NF;++i) { print $(i) } }' | grep -v "^$" | sed "s/ $//" | sed "s/^ //" > hu.sen.hand
+cat align.hand.txt | cut -f2 | awk 'BEGIN {FS=" ~~~ "} { for (i=1;i<=NF;++i) { print $(i) } }' | grep -v "^$" | sed "s/ $//" | sed "s/^ //" > en.sen.hand
+
+preproc:
+/home/daniel/hunglish/data/experiments/Steinbeck.handsegment/hu.pre
+/home/daniel/hunglish/data/experiments/Steinbeck.handsegment/en.pre
+
+auto:
+/home/daniel/hunglish/data/experiments/Steinbeck.handsegment/auto.ladder
+
+hand:
+/home/joker/steinbeck/kesz.steinbeck_align_rev.v1.0.txt
+or
+/home/daniel/hunglish/data/handaligns/steinbeck/kesz.steinbeck_align_rev.v1.0.txt
+
+The text to ladder conversion script used:
+
+cat kesz.steinbeck_align_rev.v1.0.txt | sed "s/\([^ ]\)~~~ /\1 ~~~ /g" | sed "s/ ~~~\([^ ]\)/ ~~~ \1/g" | sed "s/\([^ ]\)~~~\([^ ]\)/\1 ~~~ \2/g" | grep -v "^$" > align.hand.txt
+mkdir tmp
+export file=align.hand.txt
+half=1 ; cat $file | grep -v "^.$" | cut -f$half | awk 'BEGIN {FS=" ~~~ "; s=0 } { print s; s+=NF } END { print s }' > tmp/ladder.$half
+half=2 ; cat $file | grep -v "^.$" | cut -f$half | awk 'BEGIN {FS=" ~~~ "; s=0 } { print s; s+=NF } END { print s }' > tmp/ladder.$half
+paste tmp/ladder.1 tmp/ladder.2 | tr '\t' ' ' > hand.ladder

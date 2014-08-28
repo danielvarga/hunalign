@@ -1,0 +1,38 @@
+Reading dictionary...
+6481 hungarian sentences read.
+6706 english sentences read.
+quasiglobal_stopwordRemoval is set to 0
+Simplified dictionary ready.
+Rough translation ready.
+0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 5100 5200 5300 5400 5500 5600 5700 5800 5900 6000 6100 6200 6300 6400 
+Rough translation-based similarity matrix ready.
+Matrix built.
+Trail found.
+Align ready.
+Global quality of unfiltered align 0.318931
+138326 items inside the border.
+Border of realign zone determined.
+6151 bisentences collected.
+Plausible bisentences filtered.
+Removing stopwords...Removing identicals... ! ( ) - . 100 12 1900 1914 1920 1925 1930 1940 1944 1945 1960 1965 1968 1970 1973 1983 1984 20 2050 2713 3 6079 83 85 98 99 : ; ? aaronson absurd accent accident acid act adam adjectival adoptive adverb africa african agent agitprop ah album alibi amersham ampleforth ancestral animal anti-sex apologetic are artificial atlantic australasia avenue b baal bar barman berkhamsted boy brazzaville bumstead byron c canada cap capitalism capitalist care caricaturist caste cent central charrington chaucer china civil clang clement colchester comintern competent complex concept concrete conflict congo consider constant contact continue contralto control coral crime cromwell darwin de definitive demonstrative dickens din direct district doctor doctrine document elaborate electric emmanuel etc eurasia eurasian european evident exact exist face false familiar fanatic film force fragment franca frigid front general gestapo gin goldstein helicopter i ideal ignorant iii imagine important in incident independent india indian indirect individual individualism inferior inprecorr instinct instinctive instrument interval j java jefferson jones julia karl kipling leopoldville lift lingua malabar martin marx material metal milton minimum minipax minute moment mongolia monument mother motor murmur natural nazi negroid new noctis normal o'brien oceania ogilvy oliver omnipotent optimism or orator orgiastic osiris pacific paddington palimpsest pancras pardon paris parsons patriotic patriotism pedant perfect permanent persia pistol plan pneumatic popular pornosec post pretext primae primitive principal protector protest public pure raid rare real respect rest reverie rival robin romantic rutherford secret separate sex sexual shaftesbury shakespeare shoreditch siberia simple slogan smith socialism socialist solar solemn solid solipsism spasm special specialist spirit splendid sport standard stepney stop submarine superior surplus suspect swift syme tibet tic tillotson times tolerant tom total tour transparent trivial valet vast verb verbal versificator violent vistula vitriol w weeks wilsher winston withers york 
+294 identical translations found.
+Removing hapaxes...558 hapax-based dictionary items found.
+Building CorpusConstellation... Done.
+0 items left in original dictionary.
+Removing stopwords...Removing identicals... 
+0 identical translations found.
+Removing hapaxes...0 hapax-based dictionary items found.
+Building CorpusConstellation... Done.
+2305 new dictionary items found.
+Simplified dictionary ready.
+Rough translation ready.
+0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 5100 5200 5300 5400 5500 5600 5700 5800 5900 6000 6100 6200 6300 6400 Matrix built.
+Trail found.
+Detail realign ready.
+Global quality of unfiltered align after realign 0.819839
+quasiglobal_spaceOutBySentenceLength is set to 1
+Trail spaced out by sentence length.
+Global quality of unfiltered align after realign 0.819839
+119 misaligned out of 6015 correct items, 6060 bets.
+Precision: 0.980363, Recall: 0.987697
+Quality 0.819839

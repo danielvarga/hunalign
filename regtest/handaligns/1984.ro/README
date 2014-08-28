@@ -1,0 +1,28 @@
+====
+Notes for users:
+
+Data obtained from the English-Romanian parallel Multext-East "1984" corpus.
+
+Note: The Romanian files are named hu.* , to make life easier for our scripts. We apologize for this approach. :) Basically, "hu" is a codeword for "source language" and "en" is a codeword for "target language".
+
+.sen files contain the token-level information of that corpus, not including stem information and paragraph structure.
+
+Encoding is ISO Latin 2.
+
+.pre files contain versions of the sen files with some very crude tokenization, and with punctuation marks deleted.
+
+====
+Notes for Hunglish developers:
+
+Originally at
+
+sen:
+/home/daniel/hunglish/data/experiments/roman2/ro.sen
+/home/daniel/hunglish/data/experiments/roman2/en.sen
+
+preproc:
+/home/daniel/hunglish/data/experiments/roman2/ro.sen.deent.low.rok
+/home/daniel/hunglish/data/experiments/roman2/en.sen.low.rok
+
+hand:
+/home/daniel/hunglish/data/experiments/roman2/hand.indexes

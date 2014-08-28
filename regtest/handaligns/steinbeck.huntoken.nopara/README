@@ -1,0 +1,29 @@
+====
+Notes for users:
+
+John Steinbeck's "Cup of Gold". Raw data obtained from the Hungarian Electronic Library and Project Gutenberg.
+
+.sen files contain the sentence-level information. Sentence-level segmentation by our huntoken tool. (Note: Unedited by hand, so not perfect at all.)
+
+Although it strictly respects this imperfect sentence-level segmentation, the alignment itself is hand-edited, and should be error-free.
+
+IMPORTANT NOTE: This directory contains the same data as steinbeck.huntoken, with just one difference: This corpus was built by throwing away all the (automatically obtained) paragraph information from the steinbeck.huntoken corpus.
+
+.pre files contain an automatically processed version of the .sen files, for aligner consumption.
+Processing steps are: rude tokenization, lowercasing, stemming by the hunstem tool with Hungarian and English resources.
+
+====
+Notes for Hunglish developers:
+
+Originally at
+
+sen:
+~/hunglish/data/experiments/microsoft/steinbeck/kornaiscript/hu.really.sen
+~/hunglish/data/experiments/microsoft/steinbeck/kornaiscript/en.really.sen
+
+preproc:
+~/hunglish/data/experiments/microsoft/steinbeck/kornaiscript/hu.sen.low.rok.stem
+~/hunglish/data/experiments/microsoft/steinbeck/kornaiscript/en.sen.low.rok.stem
+
+hand:
+~/hunglish/data/experiments/microsoft/steinbeck/kornaiscript/autole1tra

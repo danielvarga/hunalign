@@ -1,0 +1,18 @@
+Reading dictionary...
+582 hungarian sentences read.
+584 english sentences read.
+quasiglobal_stopwordRemoval is set to 0
+Simplified dictionary ready.
+Rough translation ready.
+0 100 200 300 400 500 
+Rough translation-based similarity matrix ready.
+Matrix built.
+Trail found.
+Align ready.
+Global quality of unfiltered align 1.31448
+quasiglobal_spaceOutBySentenceLength is set to 1
+Trail spaced out by sentence length.
+Global quality of unfiltered align after realign 1.31448
+11 misaligned out of 572 correct items, 580 bets.
+Precision: 0.981034, Recall: 0.994755
+Quality 1.31448
