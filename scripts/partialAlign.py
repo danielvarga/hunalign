@@ -104,7 +104,8 @@ def posetDump(chain, pairs, huLines, enLines, outputFilename) :
 
 
 # Returns a thinned chain: a list of pairs of indices.
-def api(huLines,enLines,maximalChunkSize) :
+# It also returns the unthinned version, for future reference (posetDump).
+def partialAlign(huLines,enLines,maximalChunkSize) :
     huCorpus = map( lambda l : l.strip().split() , huLines )
     enCorpus = map( lambda l : l.strip().split() , enLines )
 
@@ -146,6 +147,35 @@ def api(huLines,enLines,maximalChunkSize) :
 
     return chain,pairs
 
+def strInterval( corpus, start, end ) :
+    return "\n".join(corpus[start:end]) + "\n"
+
+def writeSubcorpora(chain, outputFilename, huLangName, enLangName, huLines, enLines) :
+    lastPos = (0,0)
+    ind = 1
+    for pos in chain :
+        if pos==lastPos :
+            continue
+        baseFilename = outputFilename + "_" + str(ind)
+        huSubCorpus = strInterval( huLines, lastPos[0], pos[0] )
+        enSubCorpus = strInterval( enLines, lastPos[1], pos[1] )
+
+        huFilename = baseFilename + "." + huLangName
+        huFile = file( huFilename, "w" )
+        huFile.write(huSubCorpus)
+        huFile.close()
+
+        enFilename = baseFilename + "." + enLangName
+        enFile = file( enFilename, "w" )
+        enFile.write(enSubCorpus)
+        enFile.close()
+
+        print huFilename +"\t"+ enFilename +"\t"+ baseFilename+".align"
+
+        lastPos = pos
+        ind += 1
+
+
 def main() :
     if len(sys.argv) not in (6,7) :
         log("A preprocessor for hunalign.")
@@ -171,7 +201,7 @@ def main() :
     enLines = map( lambda l : l.strip("\n") , file(enFilename).readlines() )
     log("Done.")
 
-    chain,pairs = api(huLines,enLines,maximalChunkSize)
+    chain,pairs = partialAlign(huLines,enLines,maximalChunkSize)
 
     posetDump(chain, pairs, huLines, enLines, outputFilename)
 
@@ -198,33 +228,8 @@ def main() :
                 print p[0],p[1]
         else :
             log("Writing subcorpora to files...")
-            lastPos = (0,0)
-            ind = 1
-            for pos in chain :
-                if pos==lastPos :
-                    continue
-                baseFilename = outputFilename + "_" + str(ind)
-                huSubCorpus = strInterval( huLines, lastPos[0], pos[0] )
-                enSubCorpus = strInterval( enLines, lastPos[1], pos[1] )
-
-                huFilename = baseFilename + "." + huLangName
-                huFile = file( huFilename, "w" )
-                huFile.write(huSubCorpus)
-                huFile.close()
-
-                enFilename = baseFilename + "." + enLangName
-                enFile = file( enFilename, "w" )
-                enFile.write(enSubCorpus)
-                enFile.close()
-
-                print huFilename +"\t"+ enFilename +"\t"+ baseFilename+".align"
-
-                lastPos = pos
-                ind += 1
+            writeSubcorpora(chain, outputFilename, huLangName, enLangName, huLines, enLines)
             log("Done.")
-
-def strInterval( corpus, start, end ) :
-    return "\n".join(corpus[start:end]) + "\n"
 
 if __name__ == '__main__': 
     main()
