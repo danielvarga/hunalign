@@ -676,7 +676,19 @@ int main_alignerTool(int argC, char* argV[])
       alignParameters.cautiousMode = true;
     }
 
-    alignParameters.utfCharCountingMode = args.getSwitchCompact("utf");
+    alignParameters.utfCharCountingMode = true;
+    bool utfObsolete = args.getSwitchCompact("utf");
+    if (utfObsolete) {
+      std::cerr << "UTF-8 mode is default now, -utf switch is unnecessary." << std::endl;
+    }
+    bool oneByteEncoding = args.getSwitchCompact("onebyteencoding");
+    if (utfObsolete&&oneByteEncoding) {
+      std::cerr << "-utf and -onebyteencoding are contradictory." << std::endl;
+      throw "argument error";
+    }
+
+    alignParameters.utfCharCountingMode = !oneByteEncoding;
+
 
     fillPercentParameter( args, "thresh", alignParameters.qualityThreshold );
 

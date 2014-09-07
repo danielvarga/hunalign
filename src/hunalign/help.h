@@ -47,12 +47,14 @@ Arguments:\n\
 -autodict=filename\n\
 	The dictionary built during realign is saved to this file. By default, it is not saved.\n\
 \n\
--utf\n\
+\n\
+-onebyteencoding\n\
 	The system uses the character counts of the sentences as information for the\n\
-	pairing of sentences. By default, it assumes one-byte character encoding such\n\
-	as ISO Latin-1 when calculating these counts. If our text is in UTF-8 format,\n\
-	byte counts and character counts are different, and we must use the -utf switch\n\
-	to force the system to properly calculate character counts.\n\
+	pairing of sentences. By default, it assumes UTF-8 encoding.\n\
+	With this switch, it treats byte count as character count.\n\
+	This should be used for ISO encodings.\n\
+-utf\n\
+	This switch is obsolete, UTF-8 is the default input encoding in later versions.\n\
 	Note: UTF-16 input is not supported.\n\
 \n\
 Postfiltering options:\n\
