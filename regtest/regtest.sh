@@ -40,7 +40,7 @@ echo "Testing $name ..."
 target=targets/$name.cerr
 file=results/$name.cerr
 ofile=results/$name.cout
-$bindir/hunalign -utf -realign -hand=handaligns/1984.ro.utf8/hand.ladder ../data/null.dic handaligns/1984.ro.utf8/hu.pre handaligns/1984.ro.utf8/en.pre -bisent > $ofile 2> $file
+$bindir/hunalign -realign -hand=handaligns/1984.ro.utf8/hand.ladder ../data/null.dic handaligns/1984.ro.utf8/hu.pre handaligns/1984.ro.utf8/en.pre -bisent > $ofile 2> $file
 evaluator $target $file
 
 name=1984.hu
@@ -48,7 +48,7 @@ echo "Testing $name ..."
 target=targets/$name.cerr
 file=results/$name.cerr
 ofile=results/$name.cout
-$bindir/hunalign -hand=handaligns/1984.hu/hand.ladder ../data/hu-en.dic handaligns/1984.hu.handstem/hu.pre handaligns/1984.hu.handstem/en.pre -bisent > $ofile 2> $file
+$bindir/hunalign -onebyteencoding -hand=handaligns/1984.hu/hand.ladder ../data/hu-en.dic handaligns/1984.hu.handstem/hu.pre handaligns/1984.hu.handstem/en.pre -bisent > $ofile 2> $file
 evaluator $target $file
 
 name=1984.hu.handstem.realign
@@ -56,7 +56,7 @@ echo "Testing $name ..."
 target=targets/$name.cerr
 file=results/$name.cerr
 ofile=results/$name.cout
-$bindir/hunalign -realign -hand=handaligns/1984.hu/hand.ladder ../data/hu-en.dic handaligns/1984.hu.handstem/hu.pre handaligns/1984.hu.handstem/en.pre -bisent > $ofile 2> $file
+$bindir/hunalign -onebyteencoding -realign -hand=handaligns/1984.hu/hand.ladder ../data/hu-en.dic handaligns/1984.hu.handstem/hu.pre handaligns/1984.hu.handstem/en.pre -bisent > $ofile 2> $file
 evaluator $target $file
 
 name=steinbeck.huntoken.nopara
@@ -64,7 +64,7 @@ echo "Testing $name ..."
 target=targets/$name.cerr
 file=results/$name.cerr
 ofile=results/$name.cout
-$bindir/hunalign -hand=handaligns/steinbeck.huntoken.nopara/hand.ladder ../data/hu-en.dic handaligns/steinbeck.huntoken.nopara/hu.pre handaligns/steinbeck.huntoken.nopara/en.pre > $ofile 2> $file
+$bindir/hunalign -onebyteencoding -hand=handaligns/steinbeck.huntoken.nopara/hand.ladder ../data/hu-en.dic handaligns/steinbeck.huntoken.nopara/hu.pre handaligns/steinbeck.huntoken.nopara/en.pre > $ofile 2> $file
 evaluator $target $file
 
 name=1984.ro.realign
@@ -72,7 +72,7 @@ echo "Testing $name ..."
 target=targets/$name.cerr
 file=results/$name.cerr
 ofile=results/$name.cout
-$bindir/hunalign -realign -hand=handaligns/1984.ro/hand.ladder ../data/null.dic handaligns/1984.ro/hu.pre handaligns/1984.ro/en.pre -bisent > $ofile 2> $file
+$bindir/hunalign -onebyteencoding -realign -hand=handaligns/1984.ro/hand.ladder ../data/null.dic handaligns/1984.ro/hu.pre handaligns/1984.ro/en.pre -bisent > $ofile 2> $file
 evaluator $target $file
 
 name=dtm.realign
@@ -80,5 +80,5 @@ echo "Testing $name ..."
 target=targets/$name.cerr
 file=results/$name.cerr
 ofile=results/$name.cout
-$bindir/hunalign -hand=handaligns/dtm/hand.ladder ../data/hu-en.dic handaligns/dtm/hu.pre handaligns/dtm/en.pre > $ofile 2> $file
+$bindir/hunalign -onebyteencoding -hand=handaligns/dtm/hand.ladder ../data/hu-en.dic handaligns/dtm/hu.pre handaligns/dtm/en.pre > $ofile 2> $file
 evaluator $target $file
