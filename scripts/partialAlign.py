@@ -151,6 +151,7 @@ def strInterval( corpus, start, end ) :
     return "\n".join(corpus[start:end]) + "\n"
 
 def writeSubcorpora(chain, outputFilename, huLangName, enLangName, huLines, enLines) :
+    stdout = ""
     lastPos = (0,0)
     ind = 1
     for pos in chain :
@@ -170,32 +171,13 @@ def writeSubcorpora(chain, outputFilename, huLangName, enLangName, huLines, enLi
         enFile.write(enSubCorpus)
         enFile.close()
 
-        print huFilename +"\t"+ enFilename +"\t"+ baseFilename+".align"
+        stdout += ( huFilename +"\t"+ enFilename +"\t"+ baseFilename+".align" +"\n" )
 
         lastPos = pos
         ind += 1
+    return stdout
 
-
-def main() :
-    if len(sys.argv) not in (6,7) :
-        log("A preprocessor for hunalign.")
-        log("Cuts a very large sentence-segmented unaligned bicorpus into smaller parts manageable by hunalign.")
-        log("")
-        log("Usage: partialAlign.py huge_text_in_one_language huge_text_in_other_language output_filename name_of_first_lang name_of_second_lang [ maximal_size_of_chunks=5000 ] > hunalign_batch")
-        log("")
-        log("The two input files must have one line per sentence. Whitespace-delimited tokenization is preferred.")
-        log("The output is a set of files named output_filename_[123..].name_of_lang")
-        log("The standard output is a batch job description for hunalign, so this can and should be followed by:")
-        log("hunalign dictionary.dic -batch hunalign_batch")
-        sys.exit(-1)
-
-    if len(sys.argv)==7 :
-        maximalChunkSize = int(sys.argv[6])
-    else :
-        maximalChunkSize = 5000
-    
-    huFilename,enFilename,outputFilename,huLangName,enLangName = sys.argv[1:6]
-
+def partialAlignWithIO(huFilename, enFilename, outputFilename, huLangName, enLangName, maximalChunkSize) :
     log("Reading corpora...")
     huLines = map( lambda l : l.strip("\n") , file(huFilename).readlines() )
     enLines = map( lambda l : l.strip("\n") , file(enFilename).readlines() )
@@ -228,8 +210,35 @@ def main() :
                 print p[0],p[1]
         else :
             log("Writing subcorpora to files...")
-            writeSubcorpora(chain, outputFilename, huLangName, enLangName, huLines, enLines)
+            stdout = writeSubcorpora(chain, outputFilename, huLangName, enLangName, huLines, enLines)
             log("Done.")
+
+    return chain, stdout
+
+
+def main() :
+    if len(sys.argv) not in (6,7) :
+        log("A preprocessor for hunalign.")
+        log("Cuts a very large sentence-segmented unaligned bicorpus into smaller parts manageable by hunalign.")
+        log("")
+        log("Usage: partialAlign.py huge_text_in_one_language huge_text_in_other_language output_filename name_of_first_lang name_of_second_lang [ maximal_size_of_chunks=5000 ] > hunalign_batch")
+        log("")
+        log("The two input files must have one line per sentence. Whitespace-delimited tokenization is preferred.")
+        log("The output is a set of files named output_filename_[123..].name_of_lang")
+        log("The standard output is a batch job description for hunalign, so this can and should be followed by:")
+        log("hunalign dictionary.dic -batch hunalign_batch")
+        sys.exit(-1)
+
+    if len(sys.argv)==7 :
+        maximalChunkSize = int(sys.argv[6])
+    else :
+        maximalChunkSize = 5000
+    
+    huFilename,enFilename,outputFilename,huLangName,enLangName = sys.argv[1:6]
+
+    chain, stdout = partialAlignWithIO(huFilename, enFilename, outputFilename, huLangName, enLangName, maximalChunkSize)
+    sys.stdout.write(stdout)
+
 
 if __name__ == '__main__': 
     main()

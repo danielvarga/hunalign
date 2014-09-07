@@ -786,6 +786,10 @@ int main_alignerTool(int argC, char* argV[])
         std::string line;
         std::getline(bis,line);
 
+        if (line.size()<=1) {
+          continue;
+        }
+
         std::vector<std::string> words;
         split( line, words, '\t' );
 
