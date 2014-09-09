@@ -48,7 +48,9 @@ public:
     qualityThreshold(-100000),
     postprocessTrailQualityThreshold(-1),
     postprocessTrailStartAndEndQualityThreshold(-1),
-    postprocessTrailByTopologyQualityThreshold(-1)
+    postprocessTrailByTopologyQualityThreshold(-1),
+    minScoreForDictBuild(0.2),
+    minCooccForDictBuild(2)
       {}
 
   bool justSentenceIds;
@@ -62,6 +64,9 @@ public:
   double qualityThreshold;
   RealignType realignType;
   std::string handAlignFilename;
+
+  double minScoreForDictBuild;
+  int minCooccForDictBuild;
 
   bool utfCharCountingMode;
   
@@ -389,7 +394,7 @@ double alignerToolWithObjects( const DictionaryItems& dictionary,
 
             autoDictionaryForRealign( huBisentences, enBisentences,
                               reDictionary,
-                              0.2/*minScore*/, 2/*minCoocc*/ );
+                              alignParameters.minScoreForDictBuild, alignParameters.minCooccForDictBuild );
 
             std::cerr << reDictionary.size() - size << " new dictionary items found." << std::endl;
 	    if (alignParameters.autoDictionaryDumpFilename!="")
@@ -705,6 +710,35 @@ int main_alignerTool(int argC, char* argV[])
 
     bool batchMode = args.getSwitchCompact("batch") ;
 
+    bool justDictBuilding = false;
+    if (args.getSwitchCompact("dictbuild")) {
+      if (alignParameters.realignType!=AlignParameters::NoRealign) {
+        std::cerr << "-dictbuild and -realign switches are incompatible" << std::endl;
+        throw "argument error";
+      }
+      if (batchMode) {
+        std::cerr << "-dictbuild and -batch switches are incompatible" << std::endl;
+        throw "argument error";
+      }
+      justDictBuilding = true;
+    }
+
+    int minScore100 = 0;
+    if ( args.getNumericParam("minscorefordictbuild", minScore100)) {
+      if ((alignParameters.realignType!=AlignParameters::NoRealign) && !justDictBuilding) {
+        std::cerr << "-minscorefordictbuild is only meaningful with either -realign or -dictbuild" << std::endl;
+        throw "argument error";
+      }
+      alignParameters.minScoreForDictBuild = 0.01*minScore100;
+    }
+
+    if ( args.getNumericParam("mincooccfordictbuild", alignParameters.minCooccForDictBuild) ) {
+      if ((alignParameters.realignType!=AlignParameters::NoRealign) && !justDictBuilding) {
+        std::cerr << "-mincooccfordictbuild is only meaningful with either -realign or -dictbuild" << std::endl;
+        throw "argument error";
+      }
+    }
+
     if (batchMode && (remains.size()!=2) )
     {
       std::cerr << "Batch mode requires exactly two file arguments." << std::endl;
@@ -849,7 +883,14 @@ int main_alignerTool(int argC, char* argV[])
       const char* huFilename  = remains[1] ;
       const char* enFilename  = remains[2] ;
 
-      alignerToolWithFilenames( dictionary, huFilename, enFilename, alignParameters );
+      if (justDictBuilding) {
+        throw "unimplemented";
+        // cooccurrenceTool( huFilename, enFilename, alignParameters.minScoreForDictBuild, alignParameters.minCooccForDictBuild );
+      }
+      else {
+        // Main codepath
+        alignerToolWithFilenames( dictionary, huFilename, enFilename, alignParameters );
+      }
     }
   }
 #ifndef _DEBUG
