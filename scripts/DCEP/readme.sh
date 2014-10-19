@@ -90,4 +90,18 @@ nohup bash unzip.sh > cout 2> cerr &
 cd ~/big/experiments/DCEP/
 cat cross-lingual-index.txt | awk '{ printf("%06d\t%s\n", NR, $0) }' > named-cross-lingual-index.txt 
 
-# I started working on a do-one-doc.py
+# Moved ~/big/experiments/DCEP/ssplit and ssplit-DCEP.tar into ~/big/experiments/DCEP/Attic , they
+# are obsoleted by Jaakko's versions.
+# Moved Jaakko's versions from ~/big/experiments/DCEP/sentences/DCEP/ to ~/big/experiments/DCEP/tree
+# Here tree refers to the original directory structure (sgml/OT/whatever), and flat will refer to my
+# numerical id (did) based structure.
+# The zipped ones stayed at ~/big/experiments/DCEP/sentences
+mv sentences/DCEP/sentence tree 
+mv sentences/DCEP/strip tree
+
+# Let's do the tokenization still on the tree struct.
+find tree/sentence -type d > struct-of-tree.txt # Takes 4 minutes even on kruso.
+cat struct-of-tree.txt | sed "s/^tree\/sentence/tree\/tok/" | while read d ; do mkdir -p "$d" ; done
+nohup bash hunalign/scripts/DCEP/tokenizeAll.sh > cout.tokenizeAll 2> cerr.tokenizeAll &
+# Actually, I forgot the nohup but dropping the conn still didn't kill it somehow.
+# I wonder if it will eventually realize it. Estimated to take 13 hours.
