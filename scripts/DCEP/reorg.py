@@ -64,7 +64,10 @@ def doOneDocForAllLangPairs(indexLine, sentenceRootDir, unzipDir, ladderDir) :
     docs = map(docsFilenameTransform,docs)
     langs = [ lang4doc(doc) for doc in docs ]
     logg(did)
-    unzip(did,docs,langs, sentenceRootDir, unzipDir)
+    try :
+	unzip(did,docs,langs, sentenceRootDir, unzipDir)
+    except :
+	logg("ERROR: %s : unzip/rename failed for doc." % did)
     return
     for i1,l1 in enumerate(langs) :
 	for i2 in range(i1+1,len(langs)) :
