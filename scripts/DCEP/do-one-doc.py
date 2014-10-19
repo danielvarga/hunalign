@@ -1,5 +1,5 @@
 import sys
-import zlib
+import gzip
 import os, errno
 
 def logg(s) :
@@ -20,12 +20,12 @@ def lang4doc(doc) :
     return a[1]
 
 def getUnzipFilename(did,lang,unzipDir) :
-    return unzipDir+"/"+did[-2:]+"/"+did+"."+lang
+    return "%s/%s/%s.%s.txt" % (unzipDir,did[-2:],did,lang)
 
 def unzip(did,docs,langs,sentenceRootDir,unzipDir) :
     for doc,lang in zip(docs,langs) :
-	data = file(sentenceRootDir+"/"+doc).read()
-	data = zlib.decompress(data)
+	f = gzip.open(sentenceRootDir+"/"+doc,"rb")
+	data = f.read()
 	unzipFilename = getUnzipFilename(did,lang,unzipDir)
 	try :
 	    with open(unzipFilename,"w") as f :
@@ -38,23 +38,33 @@ def removeUnzips(did,langs,unzipDir) :
     return
 
 def alignOnePair(l1,l2,did) :
-    pass
+    logg("Simulating the alignment of %s %s %s" % (did,l1,l2))
 
 def setupUnzipDir(unzipDir) :
+    logg("Setting up unzipDir.")
     for i in range(10) :
 	for j in range(10) :
 	    mkdir_p(unzipDir+"/"+str(i)+str(j))
-    logg("unzipDir was set up.")
+    logg("Done.")
+
+def docsFilenameTransform(doc) :
+    a = doc.split(".")
+    assert a[-1]=="gz"
+    assert a[-2] in ("sgml","xml")
+    a[-2] = "txt"
+    return ".".join(a)
 
 # indexLine is coming from named-cross-lingual-index.txt
 def doOneDocForAllLangPairs(indexLine, sentenceRootDir, unzipDir, ladderDir) :
     a = indexLine.strip("\n").split()
     did = a[0]
     docs = a[1:]
+    docs = map(docsFilenameTransform,docs)
     langs = [ lang4doc(doc) for doc in docs ]
-    unzip(did,docs,langs)
+    unzip(did,docs,langs, sentenceRootDir, unzipDir)
     for i1,l1 in enumerate(langs) :
 	for i2 in range(i1+1,len(langs)) :
+	    l2 = langs[i2]
 	    alignOnePair(l1,l2,did)
     removeUnzips(did,langs,unzipDir)
 	    
