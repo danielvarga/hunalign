@@ -28,8 +28,9 @@ def unzip(did,docs,langs,sentenceRootDir,unzipDir) :
 	data = f.read()
 	unzipFilename = getUnzipFilename(did,lang,unzipDir)
 	try :
-	    with open(unzipFilename,"w") as f :
-		f.write(data)
+	    f = open(unzipFilename,"w")
+	    f.write(data)
+	    f.close()
 	except :
 	    raise
 
@@ -38,7 +39,8 @@ def removeUnzips(did,langs,unzipDir) :
     return
 
 def alignOnePair(l1,l2,did) :
-    logg("Simulating the alignment of %s %s %s" % (did,l1,l2))
+    # logg("Simulating the alignment of %s %s %s" % (did,l1,l2))
+    pass
 
 def setupUnzipDir(unzipDir) :
     logg("Setting up unzipDir.")
@@ -61,18 +63,27 @@ def doOneDocForAllLangPairs(indexLine, sentenceRootDir, unzipDir, ladderDir) :
     docs = a[1:]
     docs = map(docsFilenameTransform,docs)
     langs = [ lang4doc(doc) for doc in docs ]
+    logg(did)
     unzip(did,docs,langs, sentenceRootDir, unzipDir)
+    return
     for i1,l1 in enumerate(langs) :
 	for i2 in range(i1+1,len(langs)) :
 	    l2 = langs[i2]
 	    alignOnePair(l1,l2,did)
     removeUnzips(did,langs,unzipDir)
-	    
-sentenceRootDir = "./ssplit"
-unzipDir = "./tmp"
-ladderDir = "./ladder"
 
-setupUnzipDir(unzipDir)
 
-doOneDocForAllLangPairs(sys.stdin.readline(), sentenceRootDir, unzipDir, ladderDir)
+def main() :
+    sentenceRootDir = "./ssplit"
+    unzipDir = "./ssplit-reorg"
+    ladderDir = "./ladder"
+
+    setupUnzipDir(unzipDir)
+
+    for line in sys.stdin :
+	doOneDocForAllLangPairs(line, sentenceRootDir, unzipDir, ladderDir)
+
+
+main()
+
 
