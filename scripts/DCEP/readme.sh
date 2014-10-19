@@ -105,3 +105,6 @@ cat struct-of-tree.txt | sed "s/^tree\/sentence/tree\/tok/" | while read d ; do 
 nohup bash hunalign/scripts/DCEP/tokenizeAll.sh > cout.tokenizeAll 2> cerr.tokenizeAll &
 # Actually, I forgot the nohup but dropping the conn still didn't kill it somehow.
 # I wonder if it will eventually realize it. Estimated to take 13 hours.
+
+# Parallelly (having two strings to my bow) I unpacked it on my laptop,
+# under ~/experiments/DCEP/DCEP. Will rename it to DCEP/tree and run the tokenizer. Seems to be OS X compatible.
