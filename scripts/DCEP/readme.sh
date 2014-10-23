@@ -1,3 +1,8 @@
+#####
+# Live documentation slash script collection for the creation of the DCEP parallel corpus.
+#####
+
+
 cat cross-lingual-index.txt | awk '{ print NF,NF*(NF-1)/2 }' | sort -n | uniq -c | awk '{ print $1,$2,$3,$1*$3 }' | tr ' ' '\t' | sort -n -k 3 | awk '{ s+=$4 ; print }  END { print s }'
 
 22581	1	0	0
@@ -116,3 +121,50 @@ nohup bash hunalign/scripts/DCEP/tokenizeAll.sh > cout.tokenizeAll 2> cerr.token
 # the final "Done." line and date is missing from the output.
 # I see no good reason to use kruso at this point.
 
+
+cat named-cross-lingual-index.txt | sed "s/sgml\.gz/txt/g" | sed "s/xml\.gz/txt/g" > unzipped-named-cross-lingual-index.txt
+
+# I create an augmented hunalign batch file.
+cat unzipped-named-cross-lingual-index.txt | python hunalign/scripts/DCEP/reorg.py > total.aligninfo
+# A line looks like this:
+000001	DA	IT	./tree/tok/sgml/DA/REPORT/511814__REPORT__A5-2000-0003__DA.txt	./tree/tok/sgml/IT/REPORT/511822__REPORT__A5-2000-0003__IT.txt	./flat/ladder/01/000001.DA.IT.ladder
+# reorg.py additionally creates the ./flat/ladder/${last two digits of did} subdirs.
+
+wc -l total.aligninfo
+8949132
+
+# Looking at
+cat total.aligninfo | cut -f1 | sed "s/^....//" | sort | uniq -c
+# we can see that every flat subdir will have to keep about 90000 files. A bit too much.
+
+cat total.aligninfo | cut -f2,3 | sort | uniq -c | sort -nr | less
+# -> There are basically two or three waves of countries depending on EU join times.
+# GA and TR are jokes, with 10 or so docs.
+# 55 pairs with 100k-110k bidocs.
+# 176 pairs with 14k-23k bidocs.
+# 44 pairs with less than 15 bidocs.
+
+# Okay, let's roll.
+time ./hunalign/src/hunalign/hunalign -batch hunalign/data/null.dic <( head -1000 total.aligninfo | cut -f4- ) 2> cerr.hunalign.batch
+
+cat total.aligninfo | awk '(NR%1000==0)' > sample.aligninfo
+wc -l < sample.aligninfo
+    8949
+
+time ./hunalign/src/hunalign/hunalign -batch hunalign/data/null.dic <( cat sample.aligninfo | cut -f4- ) 2> cerr2.hunalign.batch
+
+# Takes 3 min 25 sec = 205 sec, 8e6/8949*205/3600=50 hours total time.
+
+# Encountered the loop bug twice.
+
+# Let's do it with a real random sample:
+cat total.aligninfo | awk '(rand()<0.001)' > sample2.aligninfo # 9021 elements.
+time ./hunalign/src/hunalign/hunalign -batch hunalign/data/null.dic <( cat sample2.aligninfo | cut -f4- ) 2> cerr3.hunalign.batch
+# 3m55.518s that is 8e6/9021*236/3600=58 hours, that's okay.
+
+# Encountered the loop bug only once!
+
+# What about the output?:
+cat sample2.aligninfo | cut -f4- | head -10 | while read t1 t2 l ; do hunalign/scripts/ladder2text.py $l $t1 $t2 ; done | less
+cat sample2.aligninfo | cut -f4- | head -10 | while read t1 t2 l ; do t1=`echo $t1 | sed "s/tok/sentence/"` ; t2=`echo $t2 | sed "s/tok/sentence/"` ; hunalign/scripts/ladder2text.py $l $t1 $t2 ; done | less
+# Looks pretty good so far.

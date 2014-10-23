@@ -19,74 +19,64 @@ def lang4doc(doc) :
     assert a[0] in ('sgml','xml')
     return a[1]
 
-def getUnzipFilename(did,lang,unzipDir) :
-    return "%s/%s/%s.%s.txt" % (unzipDir,did[-2:],did,lang)
+def getFlatFilename(did,lang,flatDir) :
+    return "%s/%s/%s.%s.txt" % (flatDir,did[-2:],did,lang)
 
-def unzip(did,docs,langs,sentenceRootDir,unzipDir) :
+def rename(did,docs,langs,sentenceRootDir,flatDir) :
     for doc,lang in zip(docs,langs) :
-	f = gzip.open(sentenceRootDir+"/"+doc,"rb")
-	data = f.read()
-	unzipFilename = getUnzipFilename(did,lang,unzipDir)
+	oldFilename = sentenceRootDir+"/"+doc
+	newFilename = getFlatFilename(did,lang,flatDir)
 	try :
-	    f = open(unzipFilename,"w")
-	    f.write(data)
-	    f.close()
+	    shutil.copyfile(oldFilename,newFilename)
 	except :
 	    raise
 
-def removeUnzips(did,langs,unzipDir) :
-    # Don't now.
-    return
+def alignOnePair(doc1,doc2,did,l1,l2,tokRootDir,ladderRootDir) :
+    # If you send this through a cut -f4- , that's the input for a hunalign -batch run.
+    file1 = tokRootDir+"/"+doc1
+    file2 = tokRootDir+"/"+doc2
+    ladder = '{ladderRootDir}/{didPrefix}/{did}.{l1}.{l2}.ladder'.format(ladderRootDir=ladderRootDir,didPrefix=did[-2:],did=did,l1=l1,l2=l2)
+    print "\t".join((did,l1,l2,file1,file2,ladder))
 
-def alignOnePair(l1,l2,did) :
-    # logg("Simulating the alignment of %s %s %s" % (did,l1,l2))
-    pass
-
-def setupUnzipDir(unzipDir) :
-    logg("Setting up unzipDir.")
+def setupLadderDir(ladderRootDir) :
+    logg("Setting up ladderDir.")
     for i in range(10) :
 	for j in range(10) :
-	    mkdir_p(unzipDir+"/"+str(i)+str(j))
+	    mkdir_p(ladderRootDir+"/"+str(i)+str(j))
     logg("Done.")
 
-def docsFilenameTransform(doc) :
-    a = doc.split(".")
-    assert a[-1]=="gz"
-    assert a[-2] in ("sgml","xml")
-    a[-2] = "txt"
-    return ".".join(a)
-
-# indexLine is coming from named-cross-lingual-index.txt
-def doOneDocForAllLangPairs(indexLine, sentenceRootDir, unzipDir, ladderDir) :
+# indexLine is coming from unzipped-named-cross-lingual-index.txt
+def doOneDocForAllLangPairs(indexLine, tokRootDir, ladderRootDir) :
     a = indexLine.strip("\n").split()
     did = a[0]
     docs = a[1:]
-    docs = map(docsFilenameTransform,docs)
     langs = [ lang4doc(doc) for doc in docs ]
-    logg(did)
-    try :
-	unzip(did,docs,langs, sentenceRootDir, unzipDir)
-    except :
-	logg("ERROR: %s : unzip/rename failed for doc." % did)
-    return
+    if int(did)%1000==0 :
+	logg(did)
+
+    # rename(did,docs,langs,tokRootDir,tokFlatDir)
+
     for i1,l1 in enumerate(langs) :
+	doc1 = docs[i1]
 	for i2 in range(i1+1,len(langs)) :
 	    l2 = langs[i2]
-	    alignOnePair(l1,l2,did)
-    removeUnzips(did,langs,unzipDir)
+	    doc2 = docs[i2]
+	    alignOnePair(doc1,doc2,did,l1,l2,tokRootDir,ladderRootDir)
 
+
+# A typical tokenized file is under tree/tok/${some field in unzipped-named-cross-lingual-index.txt},
+# An example of ${some field} is sgml/DA/REPORT/511814__REPORT__A5-2000-0003__DA.txt
+
+# A ladder file is under flat/ladder/${last two digits of did}/$did.$l1.$l2.ladder
 
 def main() :
-    sentenceRootDir = "./ssplit"
-    unzipDir = "./ssplit-reorg"
-    ladderDir = "./ladder"
+    tokRootDir = "./tree/tok"
+    ladderRootDir = "./flat/ladder"
 
-    setupUnzipDir(unzipDir)
+    setupLadderDir(ladderRootDir)
 
     for line in sys.stdin :
-	doOneDocForAllLangPairs(line, sentenceRootDir, unzipDir, ladderDir)
+	doOneDocForAllLangPairs(line, tokRootDir, ladderRootDir)
 
 
 main()
-
-
