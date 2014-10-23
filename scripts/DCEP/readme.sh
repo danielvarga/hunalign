@@ -108,3 +108,11 @@ nohup bash hunalign/scripts/DCEP/tokenizeAll.sh > cout.tokenizeAll 2> cerr.token
 
 # Parallelly (having two strings to my bow) I unpacked it on my laptop,
 # under ~/experiments/DCEP/DCEP. Will rename it to DCEP/tree and run the tokenizer. Seems to be OS X compatible.
+
+# Both finished, the kruso one and the macbook one.
+# macbook needed 5.5 hours for tok, and 3.5 hours to verify line counts.
+# kruso needed 43.1 hours for tok, and randomly failed (produced 0 byte output) on 49 files,
+# documented in cout.tokenizeAll. Also, it seems like the verification did not finish,
+# the final "Done." line and date is missing from the output.
+# I see no good reason to use kruso at this point.
+
