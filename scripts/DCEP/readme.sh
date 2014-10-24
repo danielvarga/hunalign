@@ -183,6 +183,12 @@ scp -r hunalign nessie.nytud.hu:./experiments/DCEP/ > cout 2> cerr
 # At this point I can already run hunalign batch on sample2.
 # It takes 2 min 56 sec on nessie, faster than macbook's 3 min 55 sec.
 # I'll do it all, and I'll start from scratch aka Jaakko's tbz2s.
+
+######
+# Moving to nessie
+
+# So let's start from total scratch:
+scp -r hunalign nessie.nytud.hu:./experiments/DCEP/ > cout 2> cerr
 scp langs.txt nessie.nytud.hu:./experiments/DCEP/
 scp named-cross-lingual-index.txt unzipped-named-cross-lingual-index.txt nessie.nytud.hu:./experiments/DCEP/
 scp unzip.sh nessie.nytud.hu:./experiments/DCEP/
@@ -190,3 +196,10 @@ scp unzip.sh nessie.nytud.hu:./experiments/DCEP/
 # on nessie:
 scp -r kruso.mokk.bme.hu:./big/experiments/DCEP/sentences/optima.jrc.it/Resources/DCEP-2013/sentences .
 nohup bash unzip.sh &
+# ...when done:
+mv DCEP tree
+find tree/sentence -type d > struct-of-tree.txt
+cat struct-of-tree.txt | sed "s/^tree\/sentence/tree\/tok/" | while read d ; do mkdir -p "$d" ; done
+nohup bash hunalign/scripts/DCEP/tokenizeAll.sh > cout.tokenizeAll 2> cerr.tokenizeAll &
+
+
