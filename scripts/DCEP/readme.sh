@@ -203,3 +203,7 @@ cat struct-of-tree.txt | sed "s/^tree\/sentence/tree\/tok/" | while read d ; do 
 nohup bash hunalign/scripts/DCEP/tokenizeAll.sh > cout.tokenizeAll 2> cerr.tokenizeAll &
 
 
+cat unzipped-named-cross-lingual-index.txt | python hunalign/scripts/DCEP/reorg.py > total.aligninfo
+cat total.aligninfo | cut -f4- > total.hunalign.batch
+nohup ./hunalign/src/hunalign/hunalign -batch hunalign/data/null.dic total.hunalign.batch 2> cerr.total.hunalign.batch &
+ps | grep hunalign | cut -f1 -d' ' | xargs renice -n 19
