@@ -168,3 +168,25 @@ time ./hunalign/src/hunalign/hunalign -batch hunalign/data/null.dic <( cat sampl
 cat sample2.aligninfo | cut -f4- | head -10 | while read t1 t2 l ; do hunalign/scripts/ladder2text.py $l $t1 $t2 ; done | less
 cat sample2.aligninfo | cut -f4- | head -10 | while read t1 t2 l ; do t1=`echo $t1 | sed "s/tok/sentence/"` ; t2=`echo $t2 | sed "s/tok/sentence/"` ; hunalign/scripts/ladder2text.py $l $t1 $t2 ; done | less
 # Looks pretty good so far.
+
+
+# Okay, so I'll try to run it on nessie.nytud.hu, if the guys are fine with it.
+
+# This is how you tar a subset of the tokenized input:
+cat sample2.aligninfo | cut -f4,5 | tr '\t' '\n' | sort -u > sample2.fileset
+tar czvf sample2.tgz --files-from sample2.fileset 2> cerr
+scp sample2.tgz nessie.nytud.hu:./experiments/DCEP/
+scp sample2.aligninfo nessie.nytud.hu:./experiments/DCEP/
+
+# on macbook:
+scp -r hunalign nessie.nytud.hu:./experiments/DCEP/ > cout 2> cerr
+# At this point I can already run hunalign batch on sample2.
+# It takes 2 min 56 sec on nessie, faster than macbook's 3 min 55 sec.
+# I'll do it all, and I'll start from scratch aka Jaakko's tbz2s.
+scp langs.txt nessie.nytud.hu:./experiments/DCEP/
+scp named-cross-lingual-index.txt unzipped-named-cross-lingual-index.txt nessie.nytud.hu:./experiments/DCEP/
+scp unzip.sh nessie.nytud.hu:./experiments/DCEP/
+
+# on nessie:
+scp -r kruso.mokk.bme.hu:./big/experiments/DCEP/sentences/optima.jrc.it/Resources/DCEP-2013/sentences .
+nohup bash unzip.sh &
