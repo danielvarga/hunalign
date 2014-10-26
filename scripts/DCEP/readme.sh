@@ -207,3 +207,35 @@ cat unzipped-named-cross-lingual-index.txt | python hunalign/scripts/DCEP/reorg.
 cat total.aligninfo | cut -f4- > total.hunalign.batch
 nohup ./hunalign/src/hunalign/hunalign -batch hunalign/data/null.dic total.hunalign.batch 2> cerr.total.hunalign.batch &
 ps | grep hunalign | cut -f1 -d' ' | xargs renice -n 19
+
+
+# Running, I look into it time to time, and mostly it's fine. This one's not fine:
+python hunalign/scripts/ladder2text.py ./flat/ladder/15/015015.ET.IT.ladder ./tree/tok/xml/ET/IM-PRESS/16476079__IM-PRESS__20060322-BRI-06601__ET.txt ./tree/tok/xml/IT/IM-PRESS/16594256__IM-PRESS__20060322-BRI-06601__IT.txt | less
+# Complete bollocks, and it's not really hunalign's fault.
+
+# Wow, hunalign -batch finished all ~9M bidocs, and basically failed only on one.
+# More exactly, it failed on 2879 lousy bidocs with the "rare loop bug" thing,
+# and failed on 1 with an assertion, because both docs had 0 sentences.
+# It never did its "WARNING: Downgrading planned thickness" thing, which is a bit weird.
+# Running time was 48 hours 20 minutes.
+# The subcorpora have very different running times:
+# The middle did is 085891, and that was done just 12 hours before the end.
+# The middle element of total.aligninfo is 058390.IT.NL.ladder,
+# and that was done just 25 minutes before 085891. What!?
+
+# Based on this chart:
+ls -l flat/ladder/00/ | grep DE.EN | awk '{ print $6,$7,$8 "\t" $9 }' | sed "s/\..*//"
+# did 45500 to did 162300 was done in just 2.5 hours. Those are some WQ and WQA, at a first glance.
+
+
+# Random sample of bidocuments:
+time cat total.aligninfo | awk '{ print rand() "\t" $0 }' | sort -T . | cut -f2- > total.aligninfo.shuffled 
+# -> Was just 2 mins.
+# Collecting no more than 10000 bidocs for each language pair:
+cat total.aligninfo.shuffled | awk 'BEGIN{FS="\t"; limit=10000}  { lp=$2 $3 ; n=++lc[lp] ; if (n<=limit) { print } }' > total.aligninfo.shuffled.limitin10000
+cat total.aligninfo.shuffled | awk 'BEGIN{FS="\t"; limit=1000}  { lp=$2 $3 ; n=++lc[lp] ; if (n<=limit) { print } }' > total.aligninfo.shuffled.limitin1000
+
+# Collecting bisentences from above random sample of bidocuments:
+nohup bash hunalign/scripts/DCEP/extract-bisentences.sh &
+# -> Output in langpairs/biqf , name biqf is used for historical reasons, meaning quality-filtered bisentences.
+
