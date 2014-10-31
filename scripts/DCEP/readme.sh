@@ -239,3 +239,12 @@ cat total.aligninfo.shuffled | awk 'BEGIN{FS="\t"; limit=1000}  { lp=$2 $3 ; n=+
 nohup bash hunalign/scripts/DCEP/extract-bisentences.sh &
 # -> Output in langpairs/biqf , name biqf is used for historical reasons, meaning quality-filtered bisentences.
 
+
+###
+Sztaki guys have dicts for millions of language pairs:
+nohup wget -r -l 2 http://hlt.sztaki.hu/resources/dict/bylangpair/wiktionary_2013july/ > cout.wget.hlt 2> cerr.wget.hlt
+mv hlt.sztaki.hu/resources/dict/bylangpair/wiktionary_2013july hlt.sztaki.dicts
+
+# Copy them to langpairs/sztaki/DA-HU.dic etc. :
+bash hunalign/scripts/DCEP/renamesztakidicts.sh 2> cerr.renamesztakidicts
+# -> 210 exists, 66 does not, good ratio.
