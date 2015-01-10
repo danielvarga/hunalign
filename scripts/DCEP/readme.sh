@@ -288,4 +288,34 @@ diff tmp.$l1-$l2.firstalign.text tmp.$l1-$l2.text | less
 
 # Same with l1=BG ; l2=EN , here we have more text and a pretty large sztaki dict.
 
+# Again, a pretty large sztaki dict, and a language I actually understand:
+l1=DA ; l2=HU
+n=1000
+cat langpairs/batch/$l1-$l2.batch | head -$n | awk '{ print $3,$1,$2 }' | while read l t1 t2 ; do hunalign/scripts/ladder2text.py $l $t1 $t2 | cut -f2,3 ; done > tmp.$l1-$l2.text
+cat total.hunalign.batch | grep "$l1\.$l2" | head -$n | while read t1 t2 l ; do hunalign/scripts/ladder2text.py $l $t1 $t2 | cut -f2,3 ; done > tmp.$l1-$l2.firstalign.text
+diff tmp.$l1-$l2.firstalign.text tmp.$l1-$l2.text | less
+
+###
+
+# Looks pretty good, but slow. Let's use 2 cores.
+# The second job will start from language pair #171, FI-TR, that about the middle of what we haven't done yet, counted in langpairs.
+# For safety reasons, we collect output in a different flat tree ./flat/ladder22/, we'll merge when finished.
+# We'll have to shut down the first process when it starts working on langpair #171, and copy flat/ladder22 onto flat/ladder2.
+
+bash hunalign/scripts/DCEP/batchfilebylangpair.2ndcpu.sh
+
+cd hunalign/scripts/DCEP/
+python
+>>> import reorg
+>>> reorg.setupLadderDir("../../../flat/ladder22/")
+cd ../../..
+
+# Right before I'm starting it we are at langpair #65, DA-SV,
+# we are done with 1896252 bidocs, that's 1896252/8949132=21%, and it took 22 hours.
+# That's an extrapolated total 4.3 days, improvement.
+# Still, let's proceed with the 2nd CPU plan.
+
+
+# Logs are collected in langpairs/realign2.log, and the batches that are run are in langpairs/batch2.
+nohup bash hunalign/scripts/DCEP/realignall.2ndcpu.sh > realign2.log &
 
