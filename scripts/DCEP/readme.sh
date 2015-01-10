@@ -273,3 +273,19 @@ bash hunalign/scripts/DCEP/batchfilebylangpair.sh
 # Do the realign:
 nohup bash hunalign/scripts/DCEP/realignall.sh > realign.log &
 
+# How long would it take? Took 2 hours to finish BG-[A-G]*. This is 132527/8949132 of the whole thing.
+# That's 5.6 days. Actually it's worse than that, these BG-* dictionaries are very small (no sztaki), except for BG-EN.
+# BG-EN took 21 mins, the rest each took 10-13. That's bad.
+
+###
+
+# Okay, BG-CS is already done, let's check it:
+l1=BG ; l2=CS
+cat langpairs/batch/$l1-$l2.batch | awk '{ print $3,$1,$2 }' | while read l t1 t2 ; do hunalign/scripts/ladder2text.py $l $t1 $t2 | cut -f2,3 ; done > tmp.$l1-$l2.text
+cat total.hunalign.batch | grep "$l1\.$l2" | while read t1 t2 l ; do hunalign/scripts/ladder2text.py $l $t1 $t2 | cut -f2,3 ; done > tmp.$l1-$l2.firstalign.text
+diff tmp.$l1-$l2.firstalign.text tmp.$l1-$l2.text | less
+# -> Some improvement, not too much. This is a small dict.
+
+# Same with l1=BG ; l2=EN , here we have more text and a pretty large sztaki dict.
+
+
