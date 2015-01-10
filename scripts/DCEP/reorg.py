@@ -79,4 +79,5 @@ def main() :
 	doOneDocForAllLangPairs(line, tokRootDir, ladderRootDir)
 
 
-main()
+if __name__ == '__main__':
+    main()

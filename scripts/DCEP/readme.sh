@@ -87,7 +87,7 @@ cat cross-lingual-index.txt | awk '{ printf("%06d\t%s\n", NR, $0) }' | less
 
 # Okay, let's unpack all of 'em.
 
-cd DCEP/sentences # Now at ~/big/experiments/DCEP/sentences                                                                      
+cd DCEP/sentences # Now at ~/big/experiments/DCEP/sentences
 ls optima.jrc.it/Resources/DCEP-2013/sentences/DCEP-sentence-* | cut -f4 -d'-' > langs.txt
 # unzip does a tar jxvf for all strip and sentence files:
 nohup bash unzip.sh > cout 2> cerr &
@@ -239,6 +239,9 @@ cat total.aligninfo.shuffled | awk 'BEGIN{FS="\t"; limit=1000}  { lp=$2 $3 ; n=+
 nohup bash hunalign/scripts/DCEP/extract-bisentences.sh &
 # -> Output in langpairs/biqf , name biqf is used for historical reasons, meaning quality-filtered bisentences.
 
+# Building the dicts. Took exactly two weeks.
+nohup bash hunalign/scripts/DCEP/dictsforalllanguagepairs.sh &
+
 
 ###
 Sztaki guys have dicts for millions of language pairs:
@@ -248,3 +251,25 @@ mv hlt.sztaki.hu/resources/dict/bylangpair/wiktionary_2013july hlt.sztaki.dicts
 # Copy them to langpairs/sztaki/DA-HU.dic etc. :
 bash hunalign/scripts/DCEP/renamesztakidicts.sh 2> cerr.renamesztakidicts
 # -> 210 exists, 66 does not, good ratio.
+
+# Merge the autodicts and sztaki dicts, and in the process converting them to the hunalign dic format.
+bash hunalign/scripts/DCEP/mergedicts.sh
+# -> messes on cerr for the 66 missing dicts, but that's harmless.
+
+# Sort total.aligninfo into packs by language pair.
+# This is much slower than it could be, but so what, still just 45 mins.
+bash hunalign/scripts/DCEP/packaligninfobylangpair.sh
+
+# Create the flat directory hierarchy with the 00-99 dirs:
+cd hunalign/scripts/DCEP/
+python
+>>> import reorg
+>>> reorg.setupLadderDir("../../../flat/ladder2/")
+cd ../../..
+
+# Turn the langpair/aligninfo files into proper hunalign batch files, targeting flat/ladder2
+bash hunalign/scripts/DCEP/batchfilebylangpair.sh
+
+# Do the realign:
+nohup bash hunalign/scripts/DCEP/realignall.sh > realign.log &
+
