@@ -319,3 +319,50 @@ cd ../../..
 # Logs are collected in langpairs/realign2.log, and the batches that are run are in langpairs/batch2.
 nohup bash hunalign/scripts/DCEP/realignall.2ndcpu.sh > realign2.log &
 
+
+####
+
+# I started (but did not finish) an experiment to understand how the realign changes the ladders.
+# (Most importantly: can it screw them up completely?)
+
+mkdir tmp
+cat realign.log | tr ' ' '-' | while read p ; do bash hunalign/scripts/DCEP/verifylangpair.sh $p ; done | tee tmp/diffsize
+cat tmp/diffsize | grep -v "0 0 0" | awk '{ print ($4+1)/($2+1),$0 }' | sort -nr | head -30
+# 0.472452 EN-PT 73852 44079 34891
+# 0.371997 BG-IT 41916 41694 15592
+# 0.27963 CS-NL 40667 40632 11371
+# 0.26154 CS-RO 29268 29203 7654
+# 0.259978 DE-SL 46353 46355 12050
+# 0.254616 BG-PL 40998 40875 10438
+# ...
+# EN-PT does not count, it was processing it at the time. BG-IT does, though.
+# I added an optional seed parameter for sampling to verifylangpair.sh, to check the robustness of these values.
+# I didn't run this so far, but it can be used like this:
+cat realign.log | tr ' ' '-' | while read p ; do bash hunalign/scripts/DCEP/verifylangpair.sh $p 50 ; done | tee tmp/diffsize2
+cat tmp/diffsize2 | grep -v "0 0 0" | awk '{ print ($4+1)/($2+1),$0 }' | sort -nr | head -30
+# For example BG-IT seems to be an outlier, a more typical value is this: BG-IT 30973 30952 2138
+# On the other hand, CS-NL really seems to have an issue.
+
+
+####
+
+# Packaging a language pair:
+# (Not a final solution, just for the 2015-01-16 initial shipping. flatladdertolangpairs.sh is more effective.)
+p=DA-LV
+cd ~/experiments/DCEP
+# This uses flat/ladder2, so not all is there yet. DA-LV and CS-NL are.
+bash ./hunalign/scripts/DCEP/flatladdertolangpair.sh $p
+cd final
+cat ../langpairs/aligninfo/$p.aligninfo | cut -f1,4,5 | sed "s/\.\/tree\/tok\///g" > indices/$p
+tar jcvf DCEP-$p.tar.bz2 aligns/$p indices/$p > cout
+scp DCEP-$p.tar.bz2 kruso.mokk.bme.hu:./public_html/DCEP/langpairs/
+
+# Packaging the tools:
+cd final
+mkdir src
+cp ../hunalign/scripts/DCEP/languagepair.py src
+cp ../hunalign/scripts/DCEP/ladder2text.py src
+tar zcvf DCEP-tools.tgz src
+scp DCEP-tools.tgz kruso.mokk.bme.hu:./public_html/DCEP/
+scp ../hunalign/scripts/DCEP/README kruso.mokk.bme.hu:./public_html/DCEP/
+
