@@ -11,7 +11,7 @@ targ=final/aligns
 mkdir -p $targ
 ls langpairs/batch | cut -f1 -d'.' | while read p ; do mkdir $targ/$p ; done
 
-sub=ladder
+sub=ladder2 # This is the realign, not ladder22 that's only the second half, this one went through completely.
 find flat/$sub -type f | sed "s/^flat\/$sub\///" | sed "s/\.ladder$//" | tr '/.' ' ' |\
 while read dig id l1 l2
 do
