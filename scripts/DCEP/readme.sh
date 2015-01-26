@@ -366,3 +366,9 @@ tar zcvf DCEP-tools.tgz src
 scp DCEP-tools.tgz kruso.mokk.bme.hu:./public_html/DCEP/
 scp ../hunalign/scripts/DCEP/README kruso.mokk.bme.hu:./public_html/DCEP/
 
+####
+
+nohup bash hunalign/scripts/DCEP/finalpackageforlangpairs.sh &
+ionice -c 3 -p ???
+# ...2 days later
+scp final/packages/* kruso.mokk.bme.hu:./public_html/DCEP/langpairs/
