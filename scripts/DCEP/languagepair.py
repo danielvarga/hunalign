@@ -30,19 +30,21 @@ def mkdir_p(path) :
 def main():
 
     parser = optparse.OptionParser()
-    parser.add_option("--no-merge", action="store_true", dest="noMerge", help="Keep the output bidocuments in separate files under bitext/L1-L2/, instead merging them and writing them to the standard output.")
-    parser.add_option("--not-just-bisentences", action="store_false", dest="justBisen", help="Save all alignment units, not just 1-to-1 correspondences.")
-    parser.add_option("--delimiter", dest="delimiter", type="string", help="String for delimiting sentences within alignment units.")
+    defaultDelimiter = " ~~~ "
+    parser.add_option("--no-merge", action="store_true", dest="noMerge", help="Keep the output bidocuments in separate files under bitext/L1-L2/, instead of merging them and writing them to the standard output.")
+    parser.add_option("--not-just-bisentences", action="store_false", dest="justBisen", default=True, help="Save all alignment units, not just 1-to-1 correspondences.")
+    parser.add_option("--delimiter", dest="delimiter", type="string", default=defaultDelimiter, help="String for delimiting sentences within alignment units. Only meaningful when combined with --not-just-bisentences. Default value: '"+defaultDelimiter+"'.")
     parser.add_option("--topo-filter-level", action="store", type="int", default=50, dest="topoFilterLevel", metavar="TOPO_FILTER_LEVEL",
-	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. Default is 50.")
+	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. Default is 50. Cannot be combined with --not-just-bisentences.")
     parser.add_option("--length-filter-level", action="store", type="int", default=50, dest="lengthFilterLevel", metavar="LENGTH_FILTER_LEVEL",
-	help="Agressiveness of sentence character length based bisentence filtering. Between 0 and 100. Default is 50.")
+	help="Agressiveness of sentence character length based bisentence filtering. Between 0 and 100. Default is 50. Cannot be combined with --not-just-bisentences.")
     parser.add_option("--index-file", action="store", type="string", dest="indexFilename", metavar="INDEX_FILE",
-	help="Tab-separated file with rows containing align L1-sentence-segmented L2-sentence-segmented filenames.")
+	help="Tab-separated file with rows containing document-id L1-sentence-segmented-file L2-sentence-segmented-file. When combined with --no-merge, the bitext/L1-L2 directory is deduced from the sentence file paths, assuming DCEP directory structure.")
     parser.usage = "%prog [options] L1-L2\nwhere L1-L2 is a language pair, and L1 and L2 are in alphabetical order. E.g. DE-EN.\n"
     parser.usage += "or\n%prog [options] --index-file INDEX_FILE."
 
     try :
+	assert len(sys.argv)>1
 	(options, args) = parser.parse_args(sys.argv[1:])
     except :
 	parser.print_help()
@@ -51,6 +53,8 @@ def main():
     if options.indexFilename :
 	if len(args)>0 :
 	    error("Should not give a language pair when the --index-file argument is used.")
+	l1 = None
+	l2 = None
     else :
 	try :
 	    assert len(args)==1
@@ -66,11 +70,10 @@ def main():
 		error(l1+" is not the language code of a DCEP language.")
 
 
-    if not(0<=options.optTopoFilterLevel<=100) :
+    if not(0<=options.topoFilterLevel<=100) :
 	error("TOPO_FILTER_LEVEL should be between 0 and 100 inclusive.")
-    if not(0<=options.optLengthFilterLevel<=100) :
+    if not(0<=options.lengthFilterLevel<=100) :
 	error("LENGTH_FILTER_LEVEL should be between 0 and 100 inclusive.")
-
 
     if options.indexFilename :
 	indexFilename = options.indexFilename
@@ -81,8 +84,13 @@ def main():
 	error("Missing index file "+indexFilename)
 
     # TODO This part has not really been figured out yet.
-    if options.noMerge :
+    if options.noMerge and not options.indexFilename :
 	mkdir_p("bitext/"+lp)
+
+    if options.indexFilename :
+	languagePairsEncountered = set()
+    else :
+	languagePairsEncountered = set((lp,))
 
     prefix = "DCEP/sentence/" # TODO Should be generalized to tokenized text.
 
@@ -91,10 +99,19 @@ def main():
     f = open(indexFilename)
     for line in f :
 	docid,doc1,doc2 = line.strip().split()
-	
-	heuristicL1 = doc1.split("/")[0]
-	heuristicL2 = doc2.split("/")[0]
-	
+
+	heuristicL1 = doc1.split("/")[1]
+	heuristicL2 = doc2.split("/")[1]
+	if l1 is not None :
+	    assert heuristicL1==l1
+	    assert l2 is not None
+	    assert heuristicL2==l2
+	else :
+	    lp = heuristicL1+"-"+heuristicL2
+	    if options.noMerge and (lp not in languagePairsEncountered) :
+		mkdir_p("bitext/"+lp)
+		languagePairsEncountered.add(lp)
+
 	print docid,
 	ladder = "aligns/"+lp+"/"+docid
 	doc1 = prefix+doc1
