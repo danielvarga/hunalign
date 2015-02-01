@@ -31,7 +31,7 @@ def main():
 
     parser = optparse.OptionParser()
     parser.add_option("--no-merge", action="store_true", dest="noMerge", help="Keep the output bidocuments in separate files under bitext/L1-L2/, instead merging them and writing them to the standard output.")
-    parser.add_option("--not-just-bisentences", action="store_false", dest="justBisens", help="Save all alignment units, not just 1-to-1 correspondences.")
+    parser.add_option("--not-just-bisentences", action="store_false", dest="justBisen", help="Save all alignment units, not just 1-to-1 correspondences.")
     parser.add_option("--delimiter", dest="delimiter", type="string", help="String for delimiting sentences within alignment units.")
     parser.add_option("--topo-filter-level", action="store", type="int", default=50, dest="topoFilterLevel", metavar="TOPO_FILTER_LEVEL",
 	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. Default is 50.")
@@ -78,47 +78,51 @@ def main():
 	indexFilename = "indices/"+lp
 
     if not os.path.isfile(indexFilename) :
-	error("Missing index "+indexFilename+" file.")
+	error("Missing index file "+indexFilename)
 
     # TODO This part has not really been figured out yet.
     if options.noMerge :
 	mkdir_p("bitext/"+lp)
 
-    prefix = "DCEP/sentence/" # Should be generalized to tokenized text.
+    prefix = "DCEP/sentence/" # TODO Should be generalized to tokenized text.
 
     docCounter = 0
     errorCounter = 0
     f = open(indexFilename)
     for line in f :
 	docid,doc1,doc2 = line.strip().split()
+	
+	heuristicL1 = doc1.split("/")[0]
+	heuristicL2 = doc2.split("/")[0]
+	
 	print docid,
 	ladder = "aligns/"+lp+"/"+docid
 	doc1 = prefix+doc1
 	doc2 = prefix+doc2
 
-	# Ugly special case code:
-	# Sometimes hunalign rejects a task (e.g. when sentence counts differ too much)
-	# Due to some sloppiness in the postprocessing, these become empty ladder files.
-	# Normally this happens rarely, so if it is common, we take it as a sign that the
-	# directory structure was not set up properly.
+	# See explanation of this 'if' at the 'else' path.
 	if os.path.isfile(ladder) :
-	    outputLines = ladder2text.process(ladder,doc1,doc2,justBisen=False) # Will add --bisen flag later
+	    outputBytes = ladder2text.process(ladder,doc1,doc2,justBisen=options.justBisen,delimiter=options.delimiter)
 
 	    if options.noMerge :
 		resultFilename = "bitext/"+lp+"/"+docid
 		try :
 		    resultFile = open(resultFilename, "w")
-		    for outputLine in outputLines :
-			resultFile.write(outputLine+"\n")
+		    resultFile.write(outputBytes)
+		    resultFile.close()
 		except :
 		    error("Failed to write to file %s" % resultFilename)
 	    else :
-		for outputLine in outputLines :
-		    sys.stdout.write(outputLine+"\n")
+		sys.stdout.write(outputBytes)
 
 	    docCounter += 1
 	    print "done"
 	else :
+	    # Ugly special case code.
+	    # Sometimes hunalign rejects a task (e.g. when sentence counts differ too much)
+	    # Due to some sloppiness in the postprocessing, these become empty ladder files.
+	    # Normally this happens rarely, so if it is common, we take it as a sign that the
+	    # directory structure was not set up properly.
 	    print "skipped"
 	    errorCounter += 1
 	    if errorCounter>docCounter+100 :
