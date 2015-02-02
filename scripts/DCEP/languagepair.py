@@ -34,10 +34,10 @@ def main():
     parser.add_option("--no-merge", action="store_true", dest="noMerge", help="Keep the output bidocuments in separate files under bitext/L1-L2/, instead of merging them and writing them to the standard output.")
     parser.add_option("--not-just-bisentences", action="store_false", dest="justBisen", default=True, help="Save all alignment units, not just 1-to-1 correspondences.")
     parser.add_option("--delimiter", dest="delimiter", type="string", default=defaultDelimiter, help="String for delimiting sentences within alignment units. Only meaningful when combined with --not-just-bisentences. Default value: '"+defaultDelimiter+"'.")
-    parser.add_option("--topo-filter-level", action="store", type="int", default=50, dest="topoFilterLevel", metavar="TOPO_FILTER_LEVEL",
-	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. Default is 50. Cannot be combined with --not-just-bisentences.")
-    parser.add_option("--length-filter-level", action="store", type="int", default=50, dest="lengthFilterLevel", metavar="LENGTH_FILTER_LEVEL",
-	help="Agressiveness of sentence character length based bisentence filtering. Between 0 and 100. Default is 50. Cannot be combined with --not-just-bisentences.")
+    parser.add_option("--topo-filter-level", action="store", type="int", dest="topoFilterLevel", metavar="TOPO_FILTER_LEVEL",
+	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. By default it is not employed. Cannot be combined with --not-just-bisentences.")
+    parser.add_option("--length-filter-level", action="store", type="int", dest="lengthFilterLevel", metavar="LENGTH_FILTER_LEVEL",
+	help="Agressiveness of sentence character length based bisentence filtering. Between 0 and 100. By default it is not employed. Cannot be combined with --not-just-bisentences.")
     parser.add_option("--index-file", action="store", type="string", dest="indexFilename", metavar="INDEX_FILE",
 	help="Tab-separated file with rows containing document-id L1-sentence-segmented-file L2-sentence-segmented-file. When combined with --no-merge, the bitext/L1-L2 directory is deduced from the sentence file paths, assuming DCEP directory structure.")
     parser.usage = "%prog [options] L1-L2\nwhere L1-L2 is a language pair, and L1 and L2 are in alphabetical order. E.g. DE-EN.\n"
@@ -70,9 +70,9 @@ def main():
 		error(l1+" is not the language code of a DCEP language.")
 
 
-    if not(0<=options.topoFilterLevel<=100) :
+    if options.topoFilterLevel is not None and not(0<=options.topoFilterLevel<=100) :
 	error("TOPO_FILTER_LEVEL should be between 0 and 100 inclusive.")
-    if not(0<=options.lengthFilterLevel<=100) :
+    if options.lengthFilterLevel is not None and not(0<=options.lengthFilterLevel<=100) :
 	error("LENGTH_FILTER_LEVEL should be between 0 and 100 inclusive.")
 
     if options.indexFilename :
@@ -119,7 +119,9 @@ def main():
 
 	# See explanation of this 'if' at the 'else' path.
 	if os.path.isfile(ladder) :
-	    outputBytes = ladder2text.process(ladder,doc1,doc2,justBisen=options.justBisen,delimiter=options.delimiter)
+	    outputBytes = ladder2text.process(ladder, doc1, doc2,
+	    justBisen=options.justBisen, delimiter=options.delimiter,
+	    topoFilterLevel=options.topoFilterLevel, lengthFilterLevel=options.lengthFilterLevel)
 
 	    if options.noMerge :
 		resultFilename = "bitext/"+lp+"/"+docid

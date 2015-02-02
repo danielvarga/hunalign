@@ -1,9 +1,15 @@
 #!/usr/bin/python
 
+# In the code you can see lots of variables named hu* and en*, as
+# as in Hungarian and English. This does not mean that the tool
+# is not completely language-agnostic. By convention, and
+# for obvious historical reasons, hu and en should be interpreted
+# as language #1 and language #2.
+
 import sys
 import itertools
 
-'''file -> array holding the lines of the file'''
+
 def readfile(name):
     # Open the input files and read lines
     infile = file(name, 'r')
@@ -60,17 +66,82 @@ def serializeBisegment(huSens,enSens,quality=None,delimiter=" ~~~ ") :
 def isBisen(hole) :
     return (hole[1][0]-hole[0][0]==1) and (hole[1][1]-hole[0][1]==1)
 
-def process(ladderFile, huFile, enFile, justBisen, delimiter) :
+def isBisenPos(pos,ladder) :
+    assert pos+2<=len(ladder)
+    hole = ladder[pos:pos+2]
+    return isBisen(hole)
+
+def process(ladderFile, huFile, enFile, justBisen, delimiter, topoFilterLevel, lengthFilterLevel) :
     ladderLines = readfile(ladderFile)
     huSentences = readfile(huFile)
     enSentences = readfile(enFile)
     ladder = map( parseLadderLine, ladderLines )
-    bisegments = ladderToBisegments(ladder, huSentences, enSentences, justBisen)
+    bisegments = ladderToBisegments(ladder, huSentences, enSentences, justBisen, topoFilterLevel, lengthFilterLevel)
     lines = [ serializeBisegment(huSens,enSens,quality,delimiter) for huSens,enSens,quality in bisegments ]
     return "\n".join(lines)+"\n"
 
-def ladderToBisegments(ladder, huSentences, enSentences, justBisen) :
+def isAcceptableLength(huSens,enSens,lengthFilterLevel) :
+    lengthFilterRatio = float(lengthFilterLevel)/100 # TODO Casting in every inner loop, how lame is that.
+    if lengthFilterLevel is None :
+	return True
+    assert len(huSens)==1
+    assert len(enSens)==1
+    huSenUtf = huSens[0].decode("utf-8","ignore")
+    enSenUtf = enSens[0].decode("utf-8","ignore")
+    h = len(huSenUtf)+1
+    e = len(enSenUtf)+1
+    ratio = float(h)/e
+    if ratio>1 :
+	ratio = 1/ratio
+    return ratio>=lengthFilterRatio
+
+def filterTopology(ladder, topoFilterLevel) :
+    if topoFilterLevel is None :
+	return ladder
+
+    WINDOW = 100
+    # topoFilterLevel: the higher the stricter. topoFilterRatio: the smaller the stricter.
+    topoFilterRatio = 1-float(topoFilterLevel)/100
+    rungsToKill = set()
+    trailSize = len(ladder)
+    for pos in range(1,trailSize-1-WINDOW) :
+	huStart = ladder[pos][0]
+	enStart = ladder[pos][1]
+	huEnd = ladder[pos+WINDOW][0]
+	enEnd = ladder[pos+WINDOW][1]
+	deviation = float(huEnd-huStart+1)/(enEnd-enStart+1) # TODO We don't currently use it.
+	if deviation>1 :
+	    deviation = 1/deviation
+	bisenCnt = 0
+	for pos2 in range(pos,pos+WINDOW) :
+	    if isBisenPos(pos2,ladder) :
+		bisenCnt += 1
+	ratio = float(bisenCnt)/WINDOW
+	# TODO That's lame algorithmically, will switch to proper window-sliding when the basic algorithm is validated.
+	if ratio<topoFilterRatio :
+	    for pos2 in range(pos,pos+WINDOW) :
+		rungsToKill.add(pos2)
+
+    newLadder = [ rung for pos,rung in enumerate(ladder) if pos not in rungsToKill ]
+    return newLadder
+
+# Both topoFilter and lengthFilter are only meaningingful for justBisen.
+# The former is applied before holeToBisegment, and works by removing rungs.
+# The latter is applied after collecting the bisegments.
+def ladderToBisegments(ladderOrig, huSentences, enSentences, justBisen, topoFilterLevel, lengthFilterLevel) :
+    ladder = ladderOrig[:]
+
+    if topoFilterLevel is not None or lengthFilterLevel is not None :
+	assert justBisen
+
+    if topoFilterLevel is not None :
+	filterTopology(ladder, topoFilterLevel)
+
     bisegments = [ holeToBisegment(hole,huSentences,enSentences) for hole in pairwise(ladder) if ( isBisen(hole) or not justBisen ) ]
+
+    if lengthFilterLevel is not None :
+	bisegments = [ bisegment for bisegment in bisegments if isAcceptableLength(bisegment[0], bisegment[1], lengthFilterLevel) ]
+
     return bisegments
 
 def main() :
