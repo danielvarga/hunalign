@@ -8,7 +8,14 @@
 
 import sys
 import itertools
+import re
 
+# An especially crude but quite useful heuristics for
+# detecting sentences (as opposed to numberings, separators etc).
+# Two alphabetic characters with space between them.
+# See http://stackoverflow.com/a/2039476/383313 for an explanation.
+TWO_WORDS_REGEX = re.compile(r"""\w \w""", re.UNICODE)
+# TWO_WORDS_REGEX = re.compile(r"""[^\W\d_] [^\W\d_]""", re.UNICODE)
 
 def readfile(name):
     # Open the input files and read lines
@@ -71,23 +78,13 @@ def isBisenPos(pos,ladder) :
     hole = ladder[pos:pos+2]
     return isBisen(hole)
 
-def process(ladderFile, huFile, enFile, justBisen, delimiter, topoFilterLevel, lengthFilterLevel) :
-    ladderLines = readfile(ladderFile)
-    huSentences = readfile(huFile)
-    enSentences = readfile(enFile)
-    ladder = map( parseLadderLine, ladderLines )
-    bisegments = ladderToBisegments(ladder, huSentences, enSentences, justBisen, topoFilterLevel, lengthFilterLevel)
-    lines = [ serializeBisegment(huSens,enSens,quality,delimiter) for huSens,enSens,quality in bisegments ]
-    return "\n".join(lines)+"\n"
+def crudeSentenceDetector(huSenUtf,enSenUtf) :
+    return TWO_WORDS_REGEX.search(huSenUtf) is not None and TWO_WORDS_REGEX.search(enSenUtf) is not None
 
-def isAcceptableLength(huSens,enSens,lengthFilterLevel) :
+def isAcceptableLength(huSenUtf,enSenUtf,lengthFilterLevel) :
     lengthFilterRatio = float(lengthFilterLevel)/100 # TODO Casting in every inner loop, how lame is that.
     if lengthFilterLevel is None :
 	return True
-    assert len(huSens)==1
-    assert len(enSens)==1
-    huSenUtf = huSens[0].decode("utf-8","ignore")
-    enSenUtf = enSens[0].decode("utf-8","ignore")
     h = len(huSenUtf)+1
     e = len(enSenUtf)+1
     ratio = float(h)/e
@@ -100,8 +97,8 @@ def filterTopology(ladder, topoFilterLevel) :
 	return ladder
 
     WINDOW = 100
-    # topoFilterLevel: the higher the stricter. topoFilterRatio: the smaller the stricter.
-    topoFilterRatio = 1-float(topoFilterLevel)/100
+    # the higher the stricter.
+    topoFilterRatio = float(topoFilterLevel)/100
     rungsToKill = set()
     trailSize = len(ladder)
     for pos in range(1,trailSize-1-WINDOW) :
@@ -117,6 +114,7 @@ def filterTopology(ladder, topoFilterLevel) :
 	    if isBisenPos(pos2,ladder) :
 		bisenCnt += 1
 	ratio = float(bisenCnt)/WINDOW
+	# sys.stderr.write("%f %f\n" % (ratio,deviation))
 	# TODO That's lame algorithmically, will switch to proper window-sliding when the basic algorithm is validated.
 	if ratio<topoFilterRatio :
 	    for pos2 in range(pos,pos+WINDOW) :
@@ -125,24 +123,45 @@ def filterTopology(ladder, topoFilterLevel) :
     newLadder = [ rung for pos,rung in enumerate(ladder) if pos not in rungsToKill ]
     return newLadder
 
-# Both topoFilter and lengthFilter are only meaningingful for justBisen.
+# topoFilter, lengthFilter, and sentenceDetector are only meaningingful for justBisen.
 # The former is applied before holeToBisegment, and works by removing rungs.
-# The latter is applied after collecting the bisegments.
-def ladderToBisegments(ladderOrig, huSentences, enSentences, justBisen, topoFilterLevel, lengthFilterLevel) :
+# The latter two are applied after collecting the bisegments.
+def ladderToBisegments(ladderOrig, huSentences, enSentences, justBisen, topoFilterLevel, lengthFilterLevel, sentenceDetector) :
     ladder = ladderOrig[:]
 
     if topoFilterLevel is not None or lengthFilterLevel is not None :
 	assert justBisen
 
     if topoFilterLevel is not None :
-	filterTopology(ladder, topoFilterLevel)
+	ladder = filterTopology(ladder, topoFilterLevel)
 
     bisegments = [ holeToBisegment(hole,huSentences,enSentences) for hole in pairwise(ladder) if ( isBisen(hole) or not justBisen ) ]
 
-    if lengthFilterLevel is not None :
-	bisegments = [ bisegment for bisegment in bisegments if isAcceptableLength(bisegment[0], bisegment[1], lengthFilterLevel) ]
+    if lengthFilterLevel is not None or sentenceDetector :
+	keptBisegments = []
+	for bisegment in bisegments :
+	    # Lossiness is not an issue, we only use this to filter the raw bisegments.
+	    huSenUtf = bisegment[0][0].decode("utf-8","ignore")
+	    enSenUtf = bisegment[1][0].decode("utf-8","ignore")
+	    if lengthFilterLevel is not None and not isAcceptableLength(huSenUtf, enSenUtf, lengthFilterLevel) :
+		continue
+	    if sentenceDetector and not crudeSentenceDetector(huSenUtf,enSenUtf) :
+		continue
+	    keptBisegments.append(bisegment)
+	bisegments = keptBisegments
 
     return bisegments
+
+
+def process(ladderFile, huFile, enFile, justBisen, delimiter, topoFilterLevel, lengthFilterLevel, sentenceDetector) :
+    ladderLines = readfile(ladderFile)
+    huSentences = readfile(huFile)
+    enSentences = readfile(enFile)
+    ladder = map( parseLadderLine, ladderLines )
+    bisegments = ladderToBisegments(ladder, huSentences, enSentences, justBisen, topoFilterLevel, lengthFilterLevel, sentenceDetector)
+    lines = [ serializeBisegment(huSens,enSens,quality,delimiter) for huSens,enSens,quality in bisegments ]
+    return "\n".join(lines)+"\n"
+
 
 def main() :
     justBisen = False

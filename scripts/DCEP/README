@@ -39,13 +39,22 @@ wget http://people.mokk.bme.hu/~daniel/DCEP/DCEP-tools.tgz
 tar zxvf DCEP-tools.tgz
 ./src/languagepair.py DA-LV > DA-LV-bisentences.txt
 
-(You have to have python installed.)
+You have to have python installed, version 2.[567].
+
 The output is a tab-delimited UTF-8 text file with two columns.
 It contains all corresponding sentence pairs identified by hunalign, the
 automatic sentence aligner we used to create the alignment information.
 The information about the source document of the sentence pair is lost
-in this output. See below for command line switches that can alter this
+in this output format. See below for command line switches that can alter this
 behavior.
+
+If you don't roll your own filter, we recommend to use the --numbering-filter
+switch that drops much of the numberings and other lower-quality sentences:
+
+./src/languagepair.py --numbering-filter DA-LV > DA-LV-bisentences.txt
+
+See below for more detail.
+
 
 #################
 # Advanced usage
@@ -70,7 +79,23 @@ two tab-separated columns, one for both languages. In each column,
 there is a " ~~~ "-separated list of sentences. It is possible that one
 of the columns is empty: that means that the aligner did not find matching
 pair for the other column. The default " ~~~ " can be changed with the
---separator command line argument.
+--delimiter command line argument.
 
 There are command line arguments that can be used to throw away suspicious
-bisentences, if extra precision is required, at the expense of recall.
+bisentences if extra precision is required, at the expense of recall.
+
+The --numbering-filter is a crude but useful heuristic that attempts to drop numberings
+and short titles from the output. It works simply by matching sentences on both sides
+against a Unicode regex that looks for two alphabetic characters with space between them.
+
+The --length-filter-level=LENGTH_FILTER_LEVEL argument is used to throw away as suspicious
+all bisentences where the ratio of the shorter and the longer sentence (in character length)
+is less than LENGTH_FILTER_LEVEL percent.
+
+The --topo-filter-level=TOPO_FILTER_LEVEL argument is used to throw away as suspicious
+bisentences that appear in suspicious blocks of bisegments. A block of
+bisegments is determined to be suspicious if the ratio of 1-to-1 bisegments it contains
+is less than TOPO_FILTER_LEVEL percent. The heuristic works with blocks of size 100.
+This heuristic is useful to identify and remove segments of text where the original
+documents differed. (Larger parts that were left untranslated, different order of chapters, etc.)
+
