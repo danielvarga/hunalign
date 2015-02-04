@@ -358,13 +358,15 @@ tar jcvf DCEP-$p.tar.bz2 aligns/$p indices/$p > cout
 scp DCEP-$p.tar.bz2 kruso.mokk.bme.hu:./public_html/DCEP/langpairs/
 
 # Packaging the tools:
-cd final
+cd ~/experiments/DCEP/hunalign/scripts/DCEP
 mkdir src
-cp ../hunalign/scripts/DCEP/languagepair.py src
-cp ../hunalign/scripts/DCEP/ladder2text.py src
+cp languagepair.py src
+cp ladder2text.py src
+cp README.md src
 tar zcvf DCEP-tools.tgz src
 scp DCEP-tools.tgz kruso.mokk.bme.hu:./public_html/DCEP/
-scp ../hunalign/scripts/DCEP/README kruso.mokk.bme.hu:./public_html/DCEP/
+scp README.html kruso.mokk.bme.hu:./public_html/DCEP/
+# -> UPDATE: Originally with README, now with README.html, see below.
 
 ####
 
@@ -372,3 +374,11 @@ nohup bash hunalign/scripts/DCEP/finalpackageforlangpairs.sh &
 ionice -c 3 -p ???
 # ...2 days later
 scp final/packages/* kruso.mokk.bme.hu:./public_html/DCEP/langpairs/
+
+####
+
+# I converted the docs to markdown.
+# Then I auto-converted them to html with grip, and uploaded them
+pip install grip
+grip --gfm --export README.md
+scp README.html kruso.mokk.bme.hu:./public_html/DCEP/

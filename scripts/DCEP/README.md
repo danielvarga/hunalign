@@ -14,7 +14,6 @@ Download and extract the two sentence-segmented monolingual corpora:
 ```
 wget http://optima.jrc.it/Resources/DCEP-2013/sentences/DCEP-sentence-DA-pub.tar.bz2
 wget http://optima.jrc.it/Resources/DCEP-2013/sentences/DCEP-sentence-LV-pub.tar.bz2
-# Note to coauthors: shame on me, maybe we should remove the year reference from the path?
 tar jxf DCEP-sentence-DA-pub.tar.bz2
 tar jxf DCEP-sentence-LV-pub.tar.bz2
 ```
