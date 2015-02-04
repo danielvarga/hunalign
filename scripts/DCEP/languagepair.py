@@ -35,8 +35,10 @@ def main():
     parser.add_option("--not-just-bisentences", action="store_false", dest="justBisen", default=True, help="Save all alignment units, not just 1-to-1 correspondences.")
     parser.add_option("--delimiter", dest="delimiter", type="string", default=defaultDelimiter, help="String for delimiting sentences within alignment units. Only meaningful when combined with --not-just-bisentences. Default value: '"+defaultDelimiter+"'.")
 
-    parser.add_option("--topo-filter-level", action="store", type="int", dest="topoFilterLevel", metavar="TOPO_FILTER_LEVEL",
-	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. By default it is not employed. Cannot be combined with --not-just-bisentences.")
+# TODO Commented out, hardly finished.
+#    parser.add_option("--topo-filter-level", action="store", type="int", dest="topoFilterLevel", metavar="TOPO_FILTER_LEVEL",
+#	help="Agressiveness of context-based bisentence filtering. Between 0 and 100. By default it is not employed. Cannot be combined with --not-just-bisentences.")
+
     parser.add_option("--length-filter-level", action="store", type="int", dest="lengthFilterLevel", metavar="LENGTH_FILTER_LEVEL",
 	help="Agressiveness of sentence character length based bisentence filtering. Between 0 and 100. By default it is not employed. Cannot be combined with --not-just-bisentences.")
     parser.add_option("--numbering-filter", action="store_true", dest="sentenceDetector", default=False,
