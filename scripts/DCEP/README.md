@@ -4,7 +4,7 @@
 
 Example: How to get Danish-Lithuanian sentence-aligned text?
 
-### Get monolingual data
+###### Get monolingual data
 
 Enter a directory where the corpus building will take place.
 (You can build several language pairs in this same directory.)
@@ -21,7 +21,7 @@ tar jxf DCEP-sentence-LV-pub.tar.bz2
 
 The sentence segmented text is now in the `./DCEP/sentence/(xml|sgml)/(DA|LV)` subdirectories.
 
-### Get alignment data
+###### Get alignment data
 
 Download and extract the alignment information:
 
@@ -38,9 +38,9 @@ The alignment information is now in the `aligns/DA-LV` subdirectory,
 and the index describing the correspondence between text documents is in the `indices/DA-LV` text file.
 Bidocuments are indentified by 6 digit numeric ids.
 
-### Create bicorpus
+###### Create bicorpus
 
-Now we can download, extract, and run the tool that generates the bicorpus from the above data:
+Now we download, extract, and run the tool that generates the bicorpus from the above data:
 
 ```
 wget http://people.mokk.bme.hu/~daniel/DCEP/DCEP-tools.tgz
@@ -48,7 +48,7 @@ tar zxvf DCEP-tools.tgz
 ./src/languagepair.py DA-LV > DA-LV-bisentences.txt
 ```
 
-You have to have python installed, version 2.[567].
+You have to have python version 2.[567] installed to run the tool.
 
 The output is a tab-delimited UTF-8 text file with two columns.
 It contains all corresponding sentence pairs identified by hunalign, the
@@ -57,8 +57,8 @@ The information about the source document of the sentence pair is lost
 in this output format. See below for command line switches that can alter this
 behavior.
 
-If you don't roll your own filter, we recommend to use the `--numbering-filter`
-option that drops much of the numberings and other lower-quality sentences:
+If you don't roll your own sentence filter, we recommend to use the `--numbering-filter`
+option that drops much of the numberings that are very common in the corpus:
 
 ```
 ./src/languagepair.py --numbering-filter DA-LV > DA-LV-bisentences.txt
