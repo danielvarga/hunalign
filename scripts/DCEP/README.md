@@ -4,10 +4,12 @@
 
 Example: How to get Danish-Lithuanian sentence-aligned text?
 
-0. Enter a directory where the corpus building will take place.
+### Get monolingual data
+
+Enter a directory where the corpus building will take place.
 (You can build several language pairs in this same directory.)
 
-1. Download and extract the two sentence-segmented monolingual corpora:
+Download and extract the two sentence-segmented monolingual corpora:
 
 ```
 wget http://optima.jrc.it/Resources/DCEP-2013/sentences/DCEP-sentence-DA-pub.tar.bz2
@@ -17,24 +19,28 @@ tar jxf DCEP-sentence-DA-pub.tar.bz2
 tar jxf DCEP-sentence-LV-pub.tar.bz2
 ```
 
-.The sentence segmented text is now in the `./DCEP/sentence/(xml|sgml)/(DA|LV)` subdirectories.
+The sentence segmented text is now in the `./DCEP/sentence/(xml|sgml)/(DA|LV)` subdirectories.
 
-2. Download and extract the alignment information:
+### Get alignment data
+
+Download and extract the alignment information:
 
 ```
 wget http://people.mokk.bme.hu/~daniel/DCEP/langpairs/DCEP-DA-LV.tar.bz2
 tar jxf DCEP-DA-LV.tar.bz2
 ```
 
-.The alignment information contains correspondence between numerical indices
+The alignment information contains correspondence between numerical indices
 of sentences, in the next step we will turn these into actual sentence pairs.
 
-.Note that the order is alphabetical in language code: `DA-LV` is good, `LV-DA` is not.
+Note that the order is alphabetical in language code: `DA-LV` is good, `LV-DA` is not.
 The alignment information is now in the `aligns/DA-LV` subdirectory,
 and the index describing the correspondence between text documents is in the `indices/DA-LV` text file.
 Bidocuments are indentified by 6 digit numeric ids.
 
-3. Download, extract, and run the tool that generates the bicorpus from the above data:
+### Create bicorpus
+
+Now we can download, extract, and run the tool that generates the bicorpus from the above data:
 
 ```
 wget http://people.mokk.bme.hu/~daniel/DCEP/DCEP-tools.tgz
@@ -42,23 +48,23 @@ tar zxvf DCEP-tools.tgz
 ./src/languagepair.py DA-LV > DA-LV-bisentences.txt
 ```
 
-.You have to have python installed, version 2.[567].
+You have to have python installed, version 2.[567].
 
-.The output is a tab-delimited UTF-8 text file with two columns.
+The output is a tab-delimited UTF-8 text file with two columns.
 It contains all corresponding sentence pairs identified by hunalign, the
 automatic sentence aligner we used to create the alignment information.
 The information about the source document of the sentence pair is lost
 in this output format. See below for command line switches that can alter this
 behavior.
 
-.If you don't roll your own filter, we recommend to use the `--numbering-filter`
-switch that drops much of the numberings and other lower-quality sentences:
+If you don't roll your own filter, we recommend to use the `--numbering-filter`
+option that drops much of the numberings and other lower-quality sentences:
 
 ```
 ./src/languagepair.py --numbering-filter DA-LV > DA-LV-bisentences.txt
 ```
 
-.See below for more detail.
+See below for more detail.
 
 
 ## Advanced usage
@@ -66,7 +72,7 @@ switch that drops much of the numberings and other lower-quality sentences:
 `./src/languagepair.py -h` shows the available command line options.
 Here we give a bit more background for them.
 
-The original document structure is preserved with the `--no-merge command` line switch.
+The original document structure is preserved with the `--no-merge` option.
 This will create aligned text documents in `./bitexts/DA-LV`.
 The numeric ids are used as file names, e.g. `bitexts/DA-LV/013563`.
 The `indices/DA-LV` table can be used to find the correspondence between the bidocument and the
@@ -84,7 +90,7 @@ two tab-separated columns, one for both languages. In each column,
 there is a `" ~~~ "`-separated list of sentences. It is possible that one
 of the columns is empty: that means that the aligner did not find matching
 pair for the other column. The default `" ~~~ "` can be changed with the
---delimiter command line argument.
+`--delimiter` command line argument.
 
 There are command line arguments that can be used to throw away suspicious
 bisentences if extra precision is required, at the expense of recall.
