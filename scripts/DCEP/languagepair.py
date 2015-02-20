@@ -57,6 +57,9 @@ def main():
 	parser.print_help()
 	sys.exit(-1)
 
+    # TODO Remove after topoFilter is finished.
+    options.topoFilterLevel = None
+
     if options.indexFilename :
 	if len(args)>0 :
 	    error("Should not give a language pair when the --index-file argument is used.")
@@ -98,6 +101,9 @@ def main():
 
     prefix = "DCEP/sentence/" # TODO Should be generalized to tokenized text.
 
+    # TODO Make it an option.
+    verbose = False
+
     docCounter = 0
     errorCounter = 0
     try :
@@ -119,7 +125,8 @@ def main():
 		mkdir_p("bitext/"+lp)
 		languagePairsEncountered.add(lp)
 
-	print docid,
+	if verbose :
+	    sys.stderr.write(docid)
 	ladder = "aligns/"+lp+"/"+docid
 	doc1 = prefix+doc1
 	doc2 = prefix+doc2
@@ -143,14 +150,16 @@ def main():
 		sys.stdout.write(outputBytes)
 
 	    docCounter += 1
-	    print "done"
+	    if verbose :
+		sys.stderr.write(" done\n")
 	else :
 	    # Ugly special case code.
 	    # Sometimes hunalign rejects a task (e.g. when sentence counts differ too much)
 	    # Due to some sloppiness in the postprocessing, these become empty ladder files.
 	    # Normally this happens rarely, so if it is common, we take it as a sign that the
 	    # directory structure was not set up properly.
-	    print "skipped"
+	    if verbose :
+		sys.stderr.write(" skipped\n")
 	    errorCounter += 1
 	    if errorCounter>docCounter+100 :
 		error("Too many align/"+lp+" files missing, the directory structure was probably not set up properly.")
