@@ -347,7 +347,7 @@ If you use the software, please reference the following paper:
 D. Varga, L. Németh, P. Halácsy, A. Kornai, V. Trón, V. Nagy (2005).
 **Parallel corpora for medium density languages**
 _In Proceedings of the RANLP 2005_, pages 590-596.
-[(pdf)](www.kornai.com/Papers/ranlp05parallel.pdf)
+[(pdf)](http://www.kornai.com/Papers/ranlp05parallel.pdf)
 
 
 hunalign was developed under the Hunglish Project to build the
