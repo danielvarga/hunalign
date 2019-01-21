@@ -462,7 +462,7 @@ void main_alignTest()
 
   AlignMatrix alignMatrix( huBookSize, enBookSize, thickness );
 
-  sentenceListsToAlignMatrixIdentity( huSentenceList, enSentenceList, alignMatrix );
+  sentenceListsToAlignMatrixIdentity( huSentenceList, enSentenceList, alignMatrix, false );
 
   bool visualize = false;
   bool graphical = false;

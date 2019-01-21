@@ -61,7 +61,7 @@ bool isNumber( const std::string& s )
 }
 
 // (!!!) We assert that sx and sy are ordered sets of Word-s!
-int specializedIntersectionSize( const WordList& sx, const WordList& sy )
+int specializedIntersectionSize( const WordList& sx, const WordList& sy, bool noNumberScoreBoost )
 {
   int inter=0;
   WordList::const_iterator sxt = sx.begin();
@@ -103,9 +103,12 @@ int specializedIntersectionSize( const WordList& sx, const WordList& sy )
   }
 
   // TODO miert pont.
-  if ( (numberOfSameNumbers>0) && ( numberOfDifferingNumbers <= numberOfSameNumbers/5 ) )
+  if (!noNumberScoreBoost) 
   {
-    inter += 10;
+    if ( (numberOfSameNumbers>0) && ( numberOfDifferingNumbers <= numberOfSameNumbers/5 ) )
+    {
+      inter += 10;
+    }
   }
 
   return inter;
@@ -151,12 +154,12 @@ bool exceptionalScoring( const Phrase& hu, const Phrase& en, double& score )
 
 const double maximumScore = 3.0;
 
-double scoreByIdentity( const Phrase& hu, const Phrase& en )
+double scoreByIdentity( const Phrase& hu, const Phrase& en, bool noNumberScoreBoost )
 {
   double score = 0;
   if ( ! exceptionalScoring( hu, en, score ) )
   {
-    score = specializedIntersectionSize( hu, en );
+    score = specializedIntersectionSize( hu, en, noNumberScoreBoost );
 
     // If we divide with max here, we are better at avoiding global mistakes.
     // If we divide with min here, we are better at avoiding local mistakes.
@@ -179,7 +182,7 @@ double scoreByIdentity( const Phrase& hu, const Phrase& en )
 //x // Ezt akkor csereltem ki 3.0-rol 5.0-re, amikor a minimumot maximumra csreltem alabb.
 //x const double maximumScore = 5.0;
 //x 
-//x double scoreByIdentity( const Phrase& hu, const Phrase& en )
+//x double scoreByIdentity( const Phrase& hu, const Phrase& en, bool noNumberScoreBoost )
 //x {
 //x   double score = 0;
 //x   if ( ! exceptionalScoring( hu, en, score ) )
@@ -195,7 +198,7 @@ double scoreByIdentity( const Phrase& hu, const Phrase& en )
 //x   return score;
 //x }
 
-void sentenceListsToAlignMatrixIdentity( const SentenceList& huSentenceList, const SentenceList& enSentenceList, AlignMatrix& alignMatrix )
+void sentenceListsToAlignMatrixIdentity( const SentenceList& huSentenceList, const SentenceList& enSentenceList, AlignMatrix& alignMatrix, bool noNumberScoreBoost )
 {
   int huPos,enPos;
 
@@ -211,7 +214,7 @@ void sentenceListsToAlignMatrixIdentity( const SentenceList& huSentenceList, con
       const Phrase& hu = huSentenceList[huPos].words;
       const Phrase& en = enSentenceList[enPos].words;
 
-      alignMatrix.setCell( huPos, enPos, scoreByIdentity(hu,en) );
+      alignMatrix.setCell( huPos, enPos, scoreByIdentity(hu, en, noNumberScoreBoost) );
     }
 
     bool rarelyLogging = true;

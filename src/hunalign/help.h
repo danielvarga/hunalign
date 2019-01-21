@@ -47,6 +47,12 @@ Arguments:\n\
 -autodict=filename\n\
 	The dictionary built during realign is saved to this file. By default, it is not saved.\n\
 \n\
+-nonumberscoreboost\n\
+	If this option is not set (default), lines that contain exactly the\n\
+	same numbers will be given a very high priority when being matched.\n\
+	Use this flag to disable this behaviour (e.g. when you need to match\n\
+	decimal chapter numbers to Roman ones).\n\
+\n\
 \n\
 -onebyteencoding\n\
 	The system uses the character counts of the sentences as information for the\n\

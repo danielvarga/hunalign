@@ -26,11 +26,11 @@ bool isParagraph( const Phrase& phrase );
 // (!!!) We assert that sx and sy are ordered sets of Word-s!
 int intersectionSize( const WordList& sx, const WordList& sy );
 
-void sentenceListsToAlignMatrixIdentity( const SentenceList& huSentenceList, const SentenceList& enSentenceList, AlignMatrix& alignMatrix );
+void sentenceListsToAlignMatrixIdentity( const SentenceList& huSentenceList, const SentenceList& enSentenceList, AlignMatrix& alignMatrix, bool noNumberScoreBoost );
 
 class TransLex;
 
-double scoreByIdentity( const Phrase& hu, const Phrase& en );
+double scoreByIdentity( const Phrase& hu, const Phrase& en, bool noNumberScoreBoost );
 
 double scoreByTranslation( const Phrase& hu, const Phrase& en, const TransLex& transLex );
 
