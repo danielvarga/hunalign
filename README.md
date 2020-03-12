@@ -70,7 +70,7 @@ The src/include directory must be in the include path.
 
 ### Basic usage
 
-Let us assume that you are in the toplevel directory (where
+Let us assume that you are in the top level directory (where
 this readme file resides). All referenced files are meant relative to this directory.
 If you use the precompiled Windows binaries, copy them here from their directory.
 
@@ -139,9 +139,9 @@ The non-mandatory options are the following:
     starting rung is printed.
 
 -cautious
-    In -bisent mode, only bisentences for which both the preceeding and the following
+    In -bisent mode, only bisentences for which both the preceding and the following
     segments are one-to-one are printed. In the default non-bisent mode, only rungs
-    for which both the preceeding and the following segments are one-to-one are printed.
+    for which both the preceding and the following segments are one-to-one are printed.
 
 -hand=file
     When this argument is given, the precision and recall of the alignment is calculated
@@ -226,7 +226,7 @@ sentence.
 The format of the alignment output comes in two flavors: 
 text style (-text switch) or ladder style (default).
 
-- Text format of alignments. Eeach line is tab-separated into three
+- Text format of alignments. Each line is tab-separated into three
 columns. The first is a segment of the source text. The second is a
 (supposedly corresponding) segment of the target text. The third column is a
 confidence value for the segment. Such segments of the source or target text
@@ -259,7 +259,7 @@ ladder format just described.
 #### Dictionary:
 
 The dictionary consists of newline-separated dictionary items. An item
-consists of a target languge phrase and a source language phrase, separated by
+consists of a target language phrase and a source language phrase, separated by
 the " @ " sequence. Multiword phrases are allowed. The words of a phrase are
 space-separated as usual. IMPORTANT NOTE: In the current version, for
 historical reasons, the target language phrases come first. Therefore the ordering is
