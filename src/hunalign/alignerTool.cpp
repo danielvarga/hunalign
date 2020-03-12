@@ -69,6 +69,8 @@ public:
   int minCooccForDictBuild;
 
   bool utfCharCountingMode;
+
+  bool noNumberScoreBoost;
   
   std::string autoDictionaryDumpFilename; // Empty string means do not dump.
 };
@@ -291,7 +293,7 @@ double alignerToolWithObjects( const DictionaryItems& dictionary,
 
   AlignMatrix similarityMatrix( huBookSize, enBookSize, thickness, outsideOfRadiusValue );
 
-  sentenceListsToAlignMatrixIdentity( huSentenceListGarbled, enSentenceListGarbled, similarityMatrix );
+  sentenceListsToAlignMatrixIdentity( huSentenceListGarbled, enSentenceListGarbled, similarityMatrix, alignParameters.noNumberScoreBoost );
   std::cerr << std::endl;
 
   // temporaryDumpOfAlignMatrix( std::cerr, similarityMatrix );
@@ -411,7 +413,7 @@ double alignerToolWithObjects( const DictionaryItems& dictionary,
                                      huSentenceListPretty,  enSentenceList,
                                      huSentenceListGarbled, enSentenceListGarbled );
 
-          sentenceListsToAlignMatrixIdentity( huSentenceListGarbled, enSentenceListGarbled, similarityMatrixDetailed );
+          sentenceListsToAlignMatrixIdentity( huSentenceListGarbled, enSentenceListGarbled, similarityMatrixDetailed, alignParameters.noNumberScoreBoost );
         }
       }
 
@@ -707,6 +709,12 @@ int main_alignerTool(int argC, char* argV[])
     {
       alignParameters.realignType = AlignParameters::UpgradeDictRealign;
     }
+
+    if (args.getSwitchCompact("nonumberscoreboost"))
+    {
+      alignParameters.noNumberScoreBoost = true;
+    }
+
 
     bool batchMode = args.getSwitchCompact("batch") ;
 

@@ -69,7 +69,7 @@ class IdentityScorer : public SimilarityScorer
 public:
   double operator()( const Phrase& hu, const Phrase& en ) const
   {
-    return scoreByIdentity(hu,en);
+    return scoreByIdentity(hu, en, false);
   }
 };
 
