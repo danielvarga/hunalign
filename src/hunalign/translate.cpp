@@ -237,10 +237,6 @@ void trivialTranslateSentenceList(
                            SentenceList& translatedSentenceList
                      )
 {
-  {
-    std::ofstream translateLogs( "translate.txt" );
-  }
-  
   translatedSentenceList.clear();
 
   for ( int i=0; i<sentenceList.size(); ++i )
