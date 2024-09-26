@@ -47,6 +47,17 @@ offline documentation, language resources and additional tools.
 
 ### Build
 
+
+#### Cmake build (updated: 2024/09)
+
+CMake build is added to produce a library and executable
+```bash
+# generate build files
+cmake -B build .
+# build
+cmake --build build -j
+```
+
 #### Build under Linux/Unix/Mac OS X:
 
 <pre>tar zxvf hunalign-1.1.tgz
